@@ -1,0 +1,19 @@
+#!/bin/bash
+if [[ !$(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Do Not Run This As Root"
+    exit
+fi
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+PROJECT=REDACTED_GOOGLE_CLOUD_PROJECT_ID
+IMAGE_NAME=kpbb
+DEPLOY_NAME=kpbb
+TAG=kpbb
+
+# sh/backup
+
+gcloud builds submit --config cloudbuild.yaml

@@ -1,0 +1,22 @@
+<h2><a href="/tags">Tags</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-tags">
+<% page.collection.each do |tag| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= tag.relative_url %>">
+          <%= tag.id.to_b62 -%>
+        </a>
+      </h5>
+      <%= tag.value -%>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

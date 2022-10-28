@@ -1,0 +1,129 @@
+#!/bin/bash
+if [[ !$(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Do Not Run This As Root"
+    exit
+fi
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+PROJECT_ID=REDACTED_GOOGLE_CLOUD_PROJECT_ID
+IMAGE_NAME=kpbb
+DEPLOY_NAME=kpbb
+TAG=kpbb
+
+mkdir -p ./bin
+
+BOOTSWATCH () {
+  (
+    cd ../bootswatch;
+    # node_modules/.bin/grunt swatch
+    gcloud builds submit --tag gcr.io/$PROJECT_ID/bootswatch
+    gcloud run deploy bootswatch --image gcr.io/$PROJECT_ID/bootswatch --platform managed
+  )
+}
+
+DEPLOY_FUNCTION () {
+  (
+    cd functions/$1;
+    gcloud functions deploy $1 \
+      --entry-point=fn \
+      --region=us-west1 \
+      --allow-unauthenticated \
+      --runtime nodejs12 \
+      --trigger-http \
+      --project REDACTED_GOOGLE_CLOUD_PROJECT_ID \
+      --memory=$2 \
+      --timeout=$3
+  )
+}
+
+REPLACE_DOCKER_CONTAINER () {
+  IMAGE_NAME=$1
+
+  scp ./bin/$IMAGE_NAME.lastest.tar forge@lq:/home/forge/$IMAGE_NAME.lastest.tar
+
+  ssh forge@lq << EOF
+  set -e # halt on error
+  set -x # echo cmds before executing
+  set -u # fail on undefined variable
+  set -o pipefail # force pipelines to fail on fail
+
+  OLD_IMAGE=\$(docker images | grep $IMAGE_NAME | awk '{print \$3}');
+
+  if [ -n "\$OLD_IMAGE" ]
+  then
+
+    OLD_CONTAINER=\$(docker ps | grep \$OLD_IMAGE | awk '{print \$1}');
+
+    if [ -n "\$OLD_CONTAINER" ]
+    then
+
+      docker stop \$OLD_CONTAINER;
+      docker rm \$OLD_CONTAINER || docker rm -f \$OLD_CONTAINER;
+
+    fi
+
+    docker rmi \$OLD_IMAGE || docker rmi -f \$OLD_IMAGE;
+
+  fi
+
+  docker load --input ~/$IMAGE_NAME.lastest.tar;
+  NEW_IMAGE=\$(docker images | grep $IMAGE_NAME | awk '{print \$3}');
+  docker run -d --restart=always \$NEW_IMAGE;
+
+  rm ~/$IMAGE_NAME.lastest.tar;
+
+  echo 'done';
+
+EOF
+}
+
+# sh/backup
+
+# gcloud config set run/region us-west1
+# us-west1 is south carolina
+
+# gcloud builds submit --tag gcr.io/$PROJECT_ID/$IMAGE_NAME
+
+# exit;
+
+# gcloud builds submit --tag gcr.io/$PROJECT_ID/$IMAGE_NAME
+# gcloud run deploy $DEPLOY_NAME --image gcr.io/$PROJECT_ID/$IMAGE_NAME --platform managed
+
+# gcloud run deploy pb6a7c22 --image gcr.io/$PROJECT_ID/$IMAGE_NAME --platform managed
+# gcloud run deploy c8n4puh3 --image gcr.io/$PROJECT_ID/$IMAGE_NAME --platform managed
+
+# BOOTSWATCH
+
+# gcloud builds list
+
+# DEPLOY_FUNCTION twitter_ss 2048MB 60s
+# DEPLOY_FUNCTION imagick 2048MB 60s
+# DEPLOY_FUNCTION unfurl 128MB 30s
+# DEPLOY_FUNCTION inbound_feed 128MB 30s
+# DEPLOY_FUNCTION yt_webhook 128MB 30s
+DEPLOY_FUNCTION langcheck 128MB 30s
+
+# docker build . -f src/cron.Dockerfile --tag kpbb-cron:lastest
+# gcloud builds submit --config cloudbuild.yaml
+
+# gcloud run deploy pb6a7c22 \
+#    --image gcr.io/$PROJECT_ID/kpbb-server \
+#    --region=us-west1 \
+#    --platform managed \
+#    --allow-unauthenticated \
+#    --concurrency=80 \
+#    --cpu=1 \
+#    --memory=128Mi \
+#    --timeout=20s \
+#    --set-env-vars=PG_URL=postgresql://username:password@127.0.0.404:5432/dbname?sslmode=require,SENTRY_DSN=https://REDACTED@REDACTED.ingest.sentry.io/REDACTED
+
+# # ,SPOOF_CFIPCC=us
+
+# docker save --output ./bin/kpbb-cron.lastest.tar kpbb-cron:lastest
+# ls -lh ./bin/kpbb-cron.lastest.tar
+# REPLACE_DOCKER_CONTAINER kpbb-cron
+

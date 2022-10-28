@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export PATH=/usr/lib/postgresql/12/bin/:$PATH
+
+if [ -z "${PG_URL:-}" ]; then
+  source "$(dirname $0)/env" ".env.remote"
+fi
+
+BACKUP_DATA_FILE=db/backups/$(date +"%Y_%m_%d_%H_%M_%S")_data.sql
+BACKUP_SCHEMA_FILE=db/backups/$(date +"%Y_%m_%d_%H_%M_%S")_schema.sql
+
+echo "backing up to "$BACKUP_DATA_FILE
+pg_dump -d $PG_URL -T sessions -T public.sessions -f $BACKUP_DATA_FILE --data-only
+
+echo "backing up to "$BACKUP_SCHEMA_FILE
+pg_dump -d $PG_URL -f $BACKUP_SCHEMA_FILE --schema-only
+
+ls -lh $BACKUP_DATA_FILE $BACKUP_SCHEMA_FILE

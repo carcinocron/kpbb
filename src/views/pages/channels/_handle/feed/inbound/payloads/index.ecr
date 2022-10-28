@@ -1,0 +1,76 @@
+<a href="<%= channel.relative_url %>">channel</a>
+<h2><a href="<%= channel.relative_url %>/feed/inbound/payloads">Channel Feed Inbound Payloads</a></h2>
+
+<div class="btn-group float-right">
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("result", "null").e %>">
+    Unprocessed
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("result", "notnull").e %>">
+    Processed
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("result", nil).e %>">
+    Both
+  </a>
+</div>
+
+<%= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Endpoint</th>
+      <th>Data</th>
+      <th>Result</th>
+      <th>Created</th>
+      <th>Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%- page.collection.each do |payload| -%>
+    <tr>
+      <td><%= payload.id.to_b62 %></td>
+      <td>
+        <a href="<%= channel.relative_url %>/feed/inbound/endpoints/<% payload.endpoint_id.to_b62 %>"><%= payload.endpoint_id.to_b62 %></a>
+      </td>
+      <td class="mw-512">
+        /<%= payload.path.to_s.downcase -%>
+        <br>
+        <%- if data_s = payload.data_s -%>
+          <pre class="text-monospace" style="max-height: 200px;"><%= JSON.parse(data_s).to_yaml.e %></pre>
+        <%- else -%>
+          <span class="text-muted">NULL</span>
+        <%- end -%>
+      </td>
+      <td class="mw-512">
+        <%- if post_id = payload.result.post_id -%>
+          <a href="/posts/<%= post_id.to_b62 %>">post</a>
+        <%- end -%>
+        <%- if result_s = payload.result_s -%>
+          <pre class="text-monospace" style="max-height: 200px;"><%= JSON.parse(result_s).to_yaml.e %></pre>
+        <%- else -%>
+          <span class="text-muted">NULL</span>
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = payload.created_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = payload.updated_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+    </tr>
+  <%- end -%>
+  </tbody>
+</table>
+
+<%= page.render_controls if page.show_bottom_controls -%>

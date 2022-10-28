@@ -1,0 +1,22 @@
+<h2><a href="/ipaddresses">IP Addresses</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-ipaddresses">
+<% page.collection.each do |ipaddress| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= ipaddress.relative_url %>">
+        </a>
+      </h5>
+      <pre><code class="text-monospace"><%= ipaddress.value %></code></pre>
+      <p><%= ipaddress.lastseen_at %></p>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

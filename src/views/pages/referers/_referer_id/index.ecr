@@ -1,0 +1,12 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <%- if referer.value.presence -%>
+        <pre class="text-monospace"><%= referer.value %></pre>
+      <%- else -%>
+        None
+      <%- end -%>
+    </h5>
+    <p><%= referer.lastseen_at %></p>
+  </div>
+</div>

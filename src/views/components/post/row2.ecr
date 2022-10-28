@@ -1,0 +1,75 @@
+<%- if post.posted -%>
+<div class="tn">
+<%-= component "post/thumbnail" -%>
+</div>
+<%- end -%>
+<%- if false -%>
+  <div class="flex-1 score text-center mt-3">
+    <%- if score = post.score -%>
+      <%-= post.score -%>
+    <%- else -%>
+      ?
+    <%- end -%>
+  </div>
+<%- end -%>
+<div class="flex-1">
+  <h1 class="mt-0">
+    <%- if link -%>
+      <a target="_blank" rel="nofollow ugc noopener" href="<%-= link.url.e %>"><%-= post.title %></a>
+    <%- else -%>
+      <a href="<%-= post.relative_title_url %>">
+        <%-= post.title -%>
+      </a>
+    <%- end -%>
+    <%- if post.draft -%>
+      <%- if at = post.published_at -%>
+        <span class="badge badge-warning">draft until:<% component "timeago" %></span>
+      <%- else -%>
+        <span class="badge badge-warning">draft</span>
+      <%- end -%>
+    <%- end -%>
+    <%- if post.locked -%>
+      <span class="badge badge-info">locked</span>
+    <%- end -%>
+    <%- if post.ptype.value > 1 -%>
+      <span class="badge badge-info"><%-= post.ptype.value -%></span>
+    <%- end -%>
+  </h1>
+  <span>
+    <%- if post.mask.hide_createdby? -%>
+    <%- elsif createdby -%>
+      by
+      <%- if avatar = createdby.avatar.presence -%>
+        <img class="avatar" src="<%-= avatar %>" alt="Post author avatar" width="16" height="16">
+      <%- end -%>
+      <a href="<%-= createdby.relative_url %>"><%-= createdby.dname %></a>
+    <%- else -%>
+      Unknown
+    <%- end -%>
+    <%- if channel -%>
+      in
+      <a href="<%= channel.relative_url %>"><%= channel.dname %></a>
+    <%- end -%>
+    <%-= component "post/save_post_button" -%>
+    <%-= component "post/hide_post_button" -%>
+
+    <%- if link -%>
+      <a class="link-abbr" target="_blank" rel="nofollow ugc" href="<%-= link.url %>"><%-= link.url_abbr %></a>
+    <%- end -%>
+    <%- if at = post.published_at -%>
+      <a href="<%-= post.relative_title_url %>"><%= component "timeago" %></a>
+    <%- end -%>
+    <%-= component "post/tags_list" -%>
+    <% if post.dreplies > 0 %>
+      <a href="<%-= post.relative_title_url %>">
+        <%= post.dreplies %> replies
+        <% if post.treplies > post.dreplies %>
+          (<%= post.treplies %>)
+        <% end %>
+      </a>
+    <% end %>
+  </span>
+  <%- if thread.post_id -%>
+  <div class="item-html"><%-= post.body_html %></div>
+  <%- end -%>
+</div>

@@ -1,0 +1,17 @@
+<form action="/login" method="POST" class="f1">
+  <h1>Login</h1>
+  <div class="form-group">
+    <label for="handle">handle</label>
+    <input class="form-control <%= ctx.errors.form_input_class "handle" %>" type="text" name="handle" value="<%= ctx.old["handle"] %>" />
+    <%= ctx.errors.form_group_p "handle" -%>
+  </div>
+  <div class="form-group">
+    <label for="password">password</label>
+    <input class="form-control <%= ctx.errors.form_input_class "password" %>" type="password" name="password"/>
+    <%= ctx.errors.form_group_p "password" -%>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Submit" class="btn btn-primary" />
+    <a href="<%= register_uri %>">register</a>
+  </div>
+</form>

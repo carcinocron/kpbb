@@ -1,0 +1,18 @@
+<h2><a href="/home">Home</a></h2>
+
+<%= ctx.user -%>
+
+<%- if ctx.user.id && ctx.admin? -%>
+  <section>
+    <h1>Admin</h1>
+    <a href="/domains">
+      Domains
+    </a>
+    <a href="/links">
+      Links
+    </a>
+    <a href="/users">
+      Users
+    </a>
+  </section>
+<%- end -%>

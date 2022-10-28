@@ -1,0 +1,22 @@
+<h2><a href="/mimes">MIMEs</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-mimes">
+<% page.collection.each do |mime| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= mime.relative_url %>">
+        </a>
+      </h5>
+      <pre><code class="text-monospace"><%= mime.value %></code></pre>
+      <p><%= mime.lastseen_at %></p>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

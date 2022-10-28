@@ -1,0 +1,60 @@
+<h2><a href="/requestlogs">Requestlogs</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <td>ID</td>
+      <td>Path</td>
+      <td>cc_i16</td>
+      <td>IP</td>
+      <td>Referer</td>
+      <td>Useragent</td>
+      <td>Duration</td>
+      <td>User</td>
+      <td>Created At</td>
+    </tr>
+  </thead>
+  <tbody>
+    <%- page.collection.each do |requestlog| -%>
+    <tr>
+      <td><%= requestlog.id.to_b62 %></td>
+      <td><%= requestlog.path_with_query %></td>
+      <td>
+        <%- if requestlog.cc.nil? -%>
+          <em class="text-muted">none<em>
+        <%- else -%>
+          <span class="text-monospace"><%= requestlog.cc %><span>
+        <%- end -%>
+      </td>
+      <td>
+        <a href="/ipaddresses/<%= requestlog.ip %>" class="text-monospace">
+          <%= requestlog.ip -%>
+        </a>
+      </td>
+      <td>
+        <a href="/referers/<%= requestlog.referer_id %>">
+          <%= requestlog.referer_id -%>
+        </a>
+      </td>
+      <td>
+        <a href="/useragents/<%= requestlog.ua_id %>">
+          <%= requestlog.ua_id -%>
+        </a>
+      </td>
+      <td><%= requestlog.duration %><small class="text-muted">ms</small></td>
+      <td>
+        <a href="/users/<%= requestlog.user_id %>">
+          <%= requestlog.user_id -%>
+        </a>
+      </td>
+      <td><%= requestlog.created_at %></td>
+    </tr>
+    <%- end -%>
+  </tbody>
+</table>
+
+<%= page.render_controls if page.show_bottom_controls -%>

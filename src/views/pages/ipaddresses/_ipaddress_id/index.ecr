@@ -1,0 +1,12 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <%- if ipaddress.value.presence -%>
+        <pre class="text-monospace"><%= ipaddress.value %></pre>
+      <%- else -%>
+        None
+      <%- end -%>
+    </h5>
+    <p><%= ipaddress.lastseen_at %></p>
+  </div>
+</div>

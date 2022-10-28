@@ -1,0 +1,22 @@
+<h2><a href="/useragents">Useragents</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-useragents">
+<% page.collection.each do |useragent| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= useragent.relative_url %>">
+        </a>
+      </h5>
+      <pre><code class="text-monospace"><%= useragent.value %></code></pre>
+      <p><%= useragent.lastseen_at %></p>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

@@ -1,0 +1,12 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <%- if mime.value.presence -%>
+        <pre class="text-monospace"><%= mime.value %></pre>
+      <%- else -%>
+        None
+      <%- end -%>
+    </h5>
+    <p><%= mime.lastseen_at %></p>
+  </div>
+</div>

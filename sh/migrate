@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export PATH=/usr/lib/postgresql/12/bin/:$PATH
+
+export KEMAL_ENV=development
+# export PG_URL=postgresql://kpbb:kpbb@localhost:5433/kpbb?sslmode=require
+# export PG_URL=postgresql://kpbb:password@127.0.0.404:5432/kpbb?sslmode=require
+export PG_URL=postgresql://username:password@127.0.0.404:5432/dbname?sslmode=require
+export SQL_FILE=db/sql/schema.sql
+
+source "$(dirname $0)/env" ".env.local"
+
+BACKUP_FILE=db/backups/$(date +"%Y_%m_%d_%H_%M_%S").sql
+
+mkdir db/backups -p || true
+
+echo "backing up to "$BACKUP_FILE
+pg_dump -d $PG_URL -f $BACKUP_FILE
+ls -lh $BACKUP_FILE
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/drop_all_tables.sql
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/public.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/youtube.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/flair.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/webhooks.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/test_constraints.sql
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/insert_requestlog.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/update_user_password.sql
+
+exit
+
+sudo -u postgres psql -p 5433
+CREATE USER kpbb with encrypted password 'kpbb';
+CREATE DATABASE kpbb;
+GRANT ALL PRIVILEGES ON DATABASE kpbb to kpbb;
+CREATE DATABASE kpbb_testing;
+GRANT ALL PRIVILEGES ON DATABASE kpbb_testing to kpbb;
+
+CREATE USER kpbb with encrypted password 'kpbb';
+GRANT ALL PRIVILEGES ON DATABASE kpbb_testing to kpbb;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO read_write ;
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO read_write ;
+
+# dont use uppercase characters in username or dbname, it's full of regret
+CREATE USER <> WITH encrypted password '<>';
+CREATE DATABASE <>;
+GRANT ALL PRIVILEGES ON DATABASE <> to <>;
+
+sudo nano /etc/postgresql/12/main/pg_hba.conf
+# google cloud does not have a "FROM" IP, so using their SQL server
+# might be a good idea going forwars because they do have a connector thing
+# also should look into their VPNish features
+host <db> <user> all md5

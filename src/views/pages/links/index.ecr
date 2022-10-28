@@ -1,0 +1,118 @@
+<h2><a href="/links">Links</a></h2>
+
+<div class="btn-group float-right">
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "null").e %>">
+    Unprocessed
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "notnull").e %>">
+    Processed
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "error").e %>">
+    Error
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "youtube").e %>">
+    Youtube
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "unfurl").e %>">
+    Unfurl
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "file_extension").e %>">
+    File Extension
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", "unknown").e %>">
+    Unknown
+  </a>
+  <a class="btn btn-primary" href="<%= page.current_uri.append_query("meta", nil).e %>">
+    All
+  </a>
+</div>
+
+<%= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Domain</th>
+      <th>Path with Query</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <th>Last Seen</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%- page.collection.each do |link| -%>
+    <tr>
+      <td>
+        <a href="<%= link.relative_url %>">
+          <%= link.id.to_b62 -%>
+        </a>
+      </td>
+      <td>
+        <a href="/domains/<%= link.domain_id %>">
+          <%= URI.parse(link.url).host.try(&.downcase) -%>
+        </a>
+      </td>
+      <td>
+          <%= URI.parse(link.url).path_with_query -%>
+      </td>
+      <td>
+        <%- if at = link.created_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = link.updated_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = link.lastseen_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="99">
+        <table>
+          <tbody>
+            <tr>
+              <th>thumbnail</th>
+              <%- if thumbnail_url = link.meta.unfurl.try(&.thumbnail) -%>
+                <td><%= thumbnail_url %></td>
+              <%- else -%>
+                <td class="text-muted">null</td>
+              <%- end -%>
+            </tr>
+            <%- if thumbnail_url = link.meta.unfurl.try(&.thumbnail) -%>
+              <tr>
+                <th></th>
+                <td><%= component "link/thumbnail" %></td>
+              </tr>
+            <%- end -%>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="99">
+        <%- if meta_s = link.meta_s -%>
+          <pre class="text-monospace"><%= JSON.parse(meta_s).to_yaml.e %></pre>
+        <%- else -%>
+          <em class="text-muted">null</em>
+        <%- end -%>
+      </td>
+    </tr>
+  <%- end -%>
+  </tbody>
+</table>
+
+<%= page.render_controls if page.show_bottom_controls -%>

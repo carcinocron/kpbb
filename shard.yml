@@ -1,0 +1,64 @@
+name: kpbb
+version: 1.0.0
+
+dependencies:
+  # https://github.com/jeromegn/kilt
+  # Generic template interface for Crystal
+  # kilt: # version specified by kemal
+  #   github: jeromegn/kilt
+  kemal:
+    # github: bcardiff/kemal
+    # branch: crystal/0.35.0
+    github: kemalcr/kemal
+    # branch: master
+  kemal-session:
+    # github: kemalcr/kemal-session
+    # version: 0.13.0
+    github: iomcr/kemal-session
+    # version: 0.14.0
+    branch: main
+  accord:
+    github: neovintage/accord
+  sentry:
+    github: samueleaton/sentry
+    version: 0.4.0
+  pg:
+    github: will/crystal-pg
+  raven:
+    github: Sija/raven.cr
+    branch: master
+  helmet:
+    github: EvanHahn/crystal-helmet
+  markd:
+    github: icyleaf/markd
+  humanize_time:
+    github: mamantoha/humanize_time
+  webslug:
+    github: iomcr/webslug
+  php-strtotime:
+    github: iomcr/php-strtotime
+  php-shell-exec:
+    github: iomcr/php-shell-exec
+  base62:
+    github: iomcr/base62
+  awscr-s3:
+    github: taylorfinnell/awscr-s3
+  get-youtube-id:
+    github: iomcr/get-youtube-id
+  iom-encrypt:
+    github: iomcr/iom-encrypt
+  cron_scheduler:
+    github: kostya/cron_scheduler
+development_dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
+    branch: master
+# compile target
+targets:
+  server:
+    main: src/server.cr
+  cron:
+    main: src/cron.cr
+  migrate_up:
+    main: src/migrate_up.cr
+

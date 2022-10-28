@@ -1,0 +1,45 @@
+<%- if (parents = thread.parents) && (p_size = parents.size) > 0 -%>
+  <div class="parent-tree">
+  <%- parents.each_with_index do |parentpost, index| -%>
+    <div class="post p<%= ((p_size || 0) - index) %>" data-post-id="<%= parentpost.id.to_base62 %>">
+      <%-= Kpbb::Ecr::Component.post_row(ctx, parentpost, thread) -%>
+    </div>
+  <%- end -%>
+  </div>
+<% end -%>
+
+<div class="post <%= (thread.post_id==post.id ? "thread-ctx" : nil) %>" data-post-id="<%= post.id.to_base62 %>">
+  <%-= Kpbb::Ecr::Component.post_row(ctx, post, thread) -%>
+</div>
+<%- if link -%>
+
+<% if link.has_discussions? %>
+  <a class="fr" href="<%= link.relative_url %>">other discussions (<%= link.discussions %>)</a>
+<% end %>
+
+<div class="media-body expanded-thumbnail text-center" data-link-id="<%= link.id.to_base62 %>">
+  <%= component "post/thumbnail_expanded" -%>
+</div>
+<%- end -%>
+
+<div class="btn-group justify-end">
+  <%- if ctx.user && (post.creator_id == ctx.user.id || (channelmembership && channelmembership.rank > 0)) -%>
+    <a class="btn btn-danger btn-sm" href="<%= post.relative_url %>/edit">
+      edit
+    </a>
+  <%- end -%>
+  <a class="btn btn-secondary btn-sm" href="<%= post.relative_url %>/reply">
+    reply
+  </a>
+</div>
+
+<% if thread.has_children? -%>
+  <h2>replies:</h2>
+  <div class="reply-tree">
+  <% if (arr = thread.hash[thread.context.id]).any? %><% arr.each do |p| %>
+    <%-= Kpbb::Ecr::Component.reply_tree(ctx, p, thread) -%>
+  <% end end %>
+  </div>
+<% else -%>
+  <em class="text-muted">No Replies</em>
+<% end -%>

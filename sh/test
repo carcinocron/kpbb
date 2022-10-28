@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export KEMAL_ENV=test
+export PG_URL=postgresql://kpbb:kpbb@localhost:5433/kpbb_testing?sslmode=require
+export PORT=5001
+export APP_DOMAIN=127.0.0.1
+export KPBB_IMG_API=https://kpbb-img-abcdefghij-ue.a.run.app
+# export SPOOF_CFIPCC=us
+export YOUTUBE_API_KEY=dummyyoutubeapikey
+export APP_KEY=1234567890123456789012345678test
+# export SENTRY_DSN="http://skjdfhsjdlflsdkjfklsd:bbbatf@localhost:53080/1"
+
+source "$(dirname $0)/env" ".env.test"
+
+# export PATH="~/crystal/1.2.1-1/bin/:$PATH"
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/drop_all_tables.sql
+crystal run --error-trace src/migrate_up.cr
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/test/insert_user.sql
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/test_constraints.sql
+
+RUN_FN () {
+  (
+    cd functions/$1
+    yarn install
+    PORT=$2 node_modules/.bin/nodemon --exec functions-framework -- --target=fn
+  )
+}
+
+export FN_MOCK_SERVE="http://localhost:5101"
+(
+  cd functions/mock_serve
+  yarn install
+  PORT=5101 node_modules/.bin/serve public &
+)
+
+export FN_INBOUND_FEED="http://localhost:5201"
+RUN_FN inbound_feed 5201 &
+
+time crystal spec --error-trace $@

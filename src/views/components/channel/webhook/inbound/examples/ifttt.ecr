@@ -1,0 +1,38 @@
+<details>
+<summary>IFTTT</summary>
+
+<table>
+  <tbody>
+    <tr>
+      <th>URL:</th>
+      <td class="text-monospace"><%= ctx.base_url.sub("https", ctx.env.request.origin_protocol) %>/webhook/<%= client_id %>/posts</td>
+    </tr>
+    <tr>
+      <th>Method:</th>
+      <td class="text-monospace">POST</td>
+    </tr>
+    <tr>
+      <th>Content-Type:</th>
+      <td class="text-monospace">application/x-www-form-urlencoded</td>
+    </tr>
+    <tr>
+      <th>Body (Youtube):</th>
+      <td><div class="card card-body <% if ctx.theme.dark? %>bg-dark<% else %>bg-light<% end %>"><pre class="text-monospace"><code>
+        title={{Title}}&url={{Url}}&draft=0&yt_author_name={{AuthorName}}&ifttt=yt&secret=<%= secret %>
+      </code></pre></td>
+    </tr>
+    <tr>
+      <th>Body (RSS):</th>
+      <td><div class="card card-body <% if ctx.theme.dark? %>bg-dark<% else %>bg-light<% end %>"><pre class="text-monospace"><code>
+        title={{EntryTitle}}&url={{EntryUrl}}&draft=0&ifttt=rss&entry_author={{EntryAuthor}}&entry_content={{EntryContent}}&entry_image_url={{EntryImageUrl}}&entry_published={{EntryPublished}}&&feed_title={{FeedTitle}}&feed_url={{FeedUrl}}&secret=<%= secret %>
+      </code></pre></td>
+    </tr>
+    <tr>
+      <th>Body (other):</th>
+      <td><div class="card card-body <% if ctx.theme.dark? %>bg-dark<% else %>bg-light<% end %>"><pre class="text-monospace"><code>
+        title={{}}&url={{}}&draft=0&ifttt=other&secret=<%= secret %>
+      </code></pre></td>
+    </tr>
+  </tbody>
+</table>
+</details>

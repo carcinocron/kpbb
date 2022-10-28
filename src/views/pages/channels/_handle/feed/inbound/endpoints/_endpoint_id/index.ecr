@@ -1,0 +1,107 @@
+<a href="<%= channel.relative_url %>">channel</a>
+<a href="<%= channel.relative_url %>/feed/inbound/endpoints">all endpoints</a>
+<a href="<%= channel.relative_url %>/feed/inbound/payloads?endpoint_id=<%= endpoint.id.to_b62 %>">payloads</a>
+
+<h2>
+  Endpoint: <span class="text-monospace"><%= endpoint.id.to_b62 %></span>
+  <a class="btn btn-danger" href="<%= channel.relative_url %>/feed/inbound/endpoints/<%= endpoint.id.to_b62 %>/edit">edit</a>
+</h2>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Endpoint ID</th>
+      <td class="text-monospace"><%= client_id = endpoint.id.to_base62 %></td>
+    </tr>
+    <tr>
+      <th>Memo</th>
+      <td class="text-monospace"><%= endpoint.bio.e %></td>
+    </tr>
+    <tr>
+      <th>URL</th>
+      <td class="text-monospace"><%= endpoint.url.e %></td>
+    </tr>
+    <tr>
+      <th>Created</th>
+      <td>
+        <%- if at = endpoint.created_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Last Active</th>
+      <td>
+        <%- if at = endpoint.lastpolled_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Frequency</th>
+      <td>
+        <%- if at = endpoint.lastpolled_at -%>
+          <%-= endpoint.frequency -%>
+          <small class="text-muted">items in 90 days</small>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Next Poll</th>
+      <td>
+        <%- if at = endpoint.nextpoll_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Last Posted</th>
+      <td>
+        <%- if at = endpoint.lastposted_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Next Post</th>
+      <td>
+        <%- if at = endpoint.nextpost_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Active</th>
+      <td><% if endpoint.active %>Yes<% else %>No<% end %></td>
+    </tr>
+    <tr>
+      <th>Mask</th>
+      <td><%-= endpoint.mask %></td>
+    </tr>
+    <tr>
+      <th>Default Body</th>
+      <td class="text-monospace" style="white-space: pre;"><%-= endpoint.default_body.to_yaml.e %></td>
+    </tr>
+  </tbody>
+</table>
+
+<% if endpoint.active -%>
+<form method="POST" action="<%= channel.relative_url %>/feed/inbound/endpoints/<%= endpoint.id.to_b62 %>">
+  <input type="hidden" name="active" value="0" />
+  <button class="btn btn-danger">
+    Decommission
+  </button>
+</form>
+<% end -%>

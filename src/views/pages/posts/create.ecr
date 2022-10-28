@@ -1,0 +1,124 @@
+<% parent_id = ctx.env.params.query["parent_id"]? %>
+<% ptype = ctx.env.params.query["ptype"]?.try(&.downcase) %>
+<% channel_id = ctx.old["channel_id"]?.presence || ctx.env.params.query["channel_id"]?.presence %>
+
+<h2>Create Post</h2>
+
+<form action="/posts" method="POST" class="f1">
+  <div class="form-group">
+    <label for="title">
+      Title
+      <%- unless parent_id -%>
+      (required)
+      <%- else -%>
+      <span class="small text-muted">(optional)</span>
+      <%- end -%>
+    </label>
+    <input class="form-control <%= ctx.errors.form_input_class "title" %>" type="text" name="title" value="<%= ctx.old["title"] %>" />
+    <%= ctx.errors.form_group_p "title" -%>
+  </div>
+  <div class="form-group">
+    <label for="channel_id">Channel</label>
+    <select class="form-control a-select <%= ctx.errors.form_input_class "channel_id" %>" name="channel_id">
+      <option value="">no channel (your user page)</option>
+      <%- channels.each do |c| -%>
+        <option value="<%= c.id.to_b62 %>" <%= "selected" if c.id.to_b62 == channel_id %>>
+          <%= c.dname %> (<%= c.handle %>)
+        </option>
+      <%- end -%>
+    </select>
+    <%= ctx.errors.form_group_p "channel_id" -%>
+  </div>
+  <div class="form-group">
+    <label for="url">URL <span class="small text-muted">(optional)</span></label>
+    <input class="form-control <%= ctx.errors.form_input_class "url" %>" type="text" name="url" value="<%= ctx.old["url"] %>" />
+    <%= ctx.errors.form_group_p "url" -%>
+  </div>
+  <div class="form-group">
+    <label for="body_md">Text <span class="small text-muted">(optional)</span></label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "body_md" %>" name="body_md" rows=3><%= ctx.old["body_md"] %></textarea>
+    <%= ctx.errors.form_group_p "body_md" -%>
+  </div>
+  <div class="form-group">
+    <label for="tags">Tags <span class="small text-muted">(optional)</span></label>
+    <input class="form-control <%= ctx.errors.form_input_class "tags" %>" type="text" name="tags" value="<%= ctx.old["tags"] %>" />
+    <%= ctx.errors.form_group_p "tags" -%>
+  </div>
+
+  <hr />
+  <details>
+    <summary>advanced</summary>
+    <div class="form-group row">
+      <label for="ptype" class="col col-form-label col-4">Type</label>
+      <div class="col col-8">
+        <select class="form-control col-form-label a-select <%= ctx.errors.form_input_class "ptype" %>" name="ptype">
+          <%- unless parent_id -%>
+          <option value="none">Post</option>
+          <%- else -%>
+          <option value="none">Reply</option>
+          <%- end -%>
+          <option value="question"<%= " selected" if ptype == "question" %>>Question</option>
+          <option value="answer"<%= " selected" if ptype == "answer" %>>Answer</option>
+        </select>
+        <%= ctx.errors.form_group_p "ptype" -%>
+      </div>
+    </div>
+    <div class="form-group border border-secondary rounded-lg">
+      <br />
+      <div class="form-check">
+        <%- name = "posted" -%>
+        <%- default_value = "0" -%>
+        <%- value = "1" -%>
+        <%- label = "Posted to channel" -%>
+        <%= component "form/input_radio" -%>
+        <%- value = "0" -%>
+        <%- label = "Not posted to channel" -%>
+        <%= component "form/input_radio" -%>
+        <p>Posted to channel: show up in channel listed as new post thread.</p>
+        <p>Not posted to channel: Best suited for replies, answers, and follow-up questions.</p>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="mask" class="col col-form-label col-4">Mask</label>
+      <div class="col col-8">
+        <select class="form-control col col-form-label a-select <%= ctx.errors.form_input_class "mask" %>" name="mask">
+          <option value="0">post as myself</option>
+          <%- default_mask = Kpbb::Mask::Mask::None -%>
+          <%- Kpbb::Mask::Mask.each do |mask| -%>
+            <%- mask_s = mask.to_s -%>
+            <option value="<%= mask_s %>" <%= "selected" if mask_s == ctx.old["mask"]? || (ctx.old["mask"].presence.nil? && mask == default_mask) %>>
+              <%= mask.dname %>
+            </option>
+          <%- end -%>
+        </select>
+        <%= ctx.errors.form_group_p "mask" -%>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="schedule_publish_at">Schedule publish at <span class="small text-muted">(optional)</span></label>
+      <input class="form-control <%= ctx.errors.form_input_class "schedule_publish_at" %>" type="text" name="schedule_publish_at" value="<%= ctx.old["schedule_publish_at"] %>" />
+      <%= ctx.errors.form_group_p "schedule_publish_at" -%>
+    </div>
+
+    <div class="form-group border border-secondary rounded-lg">
+      <br />
+      <div class="form-check">
+        <%- name = "draft" -%>
+        <%- default_value = "0" -%>
+        <%- value = "1" -%>
+        <%- label = "Draft" -%>
+        <%= component "form/input_radio" -%>
+        <%- value = "0" -%>
+        <%- label = "Publish Now" -%>
+        <%= component "form/input_radio" -%>
+        <p>Draft: you can publish it later. Note: channel moderators might be able to see your drafts in the future.</p>
+        <p>Published: Visible to users who can see this channel.</p>
+      </div>
+    </div>
+  </details>
+
+  <hr />
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

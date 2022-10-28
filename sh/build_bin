@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+# alias crystal=~/crystal/1.2.1-1/bin/crystal
+# alias crystal=~/crystal/0.36.1-1/bin/crystal
+
+# PATH="~/crystal/0.35.1-1/bin/:$PATH"
+# PATH="~/crystal/0.36.1-1/bin/:$PATH"
+# export PATH="~/crystal/1.2.1-1/bin/:$PATH"
+
+crystal -v
+
+# shards install awscr-s3
+
+# return;
+
+# sh/dev
+
+rm -rf bin/*
+
+time crystal build src/server.cr -o bin/server --error-trace --cross-compile --target "x86_64-pc-linux-gnu"
+
+# time crystal build src/cron.cr -o bin/cron --error-trace --cross-compile --target "x86_64-pc-linux-gnu"
+
+ls -lh bin/

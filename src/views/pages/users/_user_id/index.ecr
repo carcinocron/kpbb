@@ -1,0 +1,17 @@
+<div class="mw-512 mx-auto">
+  <%- if avatar = user.avatar.presence -%>
+    <img class="mr-3 avatar" width="128" height="128" src="<%= avatar %>" alt="User avatar">
+  <%- end -%>
+  <div class="media-body">
+    <h5 class="mt-0">
+      <span href="<%= user.relative_url %>">
+        <%= user.handle -%>
+      </span>
+    </h5>
+    <%- if user.bio && !user.bio.empty? -%>
+      <%= user.bio -%>
+    <%- else -%>
+      <em class="text-muted">This user has not described themself.</em>
+    <%- end -%>
+  </div>
+</div>

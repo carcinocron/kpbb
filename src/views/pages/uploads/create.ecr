@@ -1,0 +1,16 @@
+<h2>Create Upload</h2>
+
+<form action="/uploads" method="POST" enctype="multipart/form-data" class="mw-512">
+  <input type="file"
+    name="upload"
+    accept="image/png, image/jpeg, image/jpg, image/webp"
+  />
+  <%- if ctx.errors.any? -%>
+    <div class="alert alert-danger">
+      <%= ctx.errors -%>
+    </div>
+  <%- end -%>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

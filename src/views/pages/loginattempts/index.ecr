@@ -1,0 +1,50 @@
+<h2><a href="/loginattempts">Login Attempts</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <td>ID</td>
+      <td>handle</td>
+      <td>cc_i16</td>
+      <td>IP</td>
+      <td>Success?</td>
+      <td>Useragent</td>
+      <td>Created At</td>
+    </tr>
+  </thead>
+  <tbody>
+    <%- page.collection.each do |loginattempt| -%>
+    <tr>
+      <td><%= loginattempt.id.to_b62 %></td>
+      <td><%= loginattempt.handle %></td>
+      <td>
+        <%- if loginattempt.cc.nil? -%>
+          <em class="text-muted">none<em>
+        <%- else -%>
+          <span class="text-monospace"><%= loginattempt.cc %><span>
+        <%- end -%>
+      </td>
+      <td>
+        <a href="/ipaddresses/<%= loginattempt.ip %>" class="text-monospace">
+          <%= loginattempt.ip -%>
+        </a>
+      </td>
+      <td>
+        <%= one_or_zero(loginattempt.success) -%>
+      </td>
+      <td>
+        <a href="/useragents/<%= loginattempt.ua_id %>">
+          <%= loginattempt.ua_id -%>
+        </a>
+      </td>
+      <td><%= loginattempt.created_at %></td>
+    </tr>
+    <%- end -%>
+  </tbody>
+</table>
+
+<%= page.render_controls if page.show_bottom_controls -%>

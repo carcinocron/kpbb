@@ -1,0 +1,93 @@
+<h2><a href="/uploads">Uploads</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <td></td>
+      <td>ID</td>
+      <td>IP</td>
+      <td>Useragent</td>
+      <td>User</td>
+      <td>MIME</td>
+      <td>size</td>
+      <td>Resolution</td>
+      <td>crc32</td>
+      <td>status</td>
+      <td>Created At</td>
+    </tr>
+  </thead>
+  <%- page.collection.each do |upload| -%>
+  <tbody>
+    <tr>
+      <td>
+        <a href="/img/ug/<%= upload.id.to_base62 %>.png"/>
+          <img src="/img/ua/<%= upload.id.to_base62 %>.png"/>
+        </a>
+      </td>
+      <td><%= upload.id.to_b62 %></td>
+      <td>
+        <a href="/ipaddresses/<%= upload.ip %>" class="text-monospace">
+          <%= upload.ip -%>
+        </a>
+      </td>
+      <td>
+        <a href="/useragents/<%= upload.ua_id %>">
+          <%= upload.ua_id -%>
+        </a>
+      </td>
+      <td>
+        <a href="/users/<%= upload.creator_id %>">
+          <%= upload.creator_id -%>
+        </a>
+      </td>
+      <td>
+        <a href="/mimes/<%= upload.mime_id %>">
+          <%= upload.mime_id -%>
+        </a>
+      </td>
+      <td>
+          <%- if s = upload.size -%>
+            <%= s.humanize_bytes -%>
+          <%- else -%>
+            NA
+          <%- end -%>
+      </td>
+      <td>
+          <%- if upload.width && upload.height -%>
+            <%= upload.width %>&times;<%= upload.height -%>
+          <%- else -%>
+            NA
+          <%- end -%>
+      </td>
+      <td>
+          <%- if upload.crc32 -%>
+            &check;
+          <%- else -%>
+            &times;
+          <%- end -%>
+      </td>
+      <td><%= upload.status %></td>
+      <td>
+        <%- at = upload.created_at -%>
+        <%-= component "timeago" -%>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="99">
+        <%- if upload.filename -%>
+          <p class="small text-monospace"><%= upload.filename %></p>
+        <%- end -%>
+        <%- if upload.typedesc -%>
+          <p class="small text-monospace"><%= upload.typedesc %></p>
+        <%- end -%>
+      </td>
+    </tr>
+  </tbody>
+  <%- end -%>
+</table>
+
+<%= page.render_controls if page.show_bottom_controls -%>

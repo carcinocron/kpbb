@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export SPOOF_CFIPCC=us
+
+ENV_FILE=.env.remote
+
+source "$(dirname $0)/env" $ENV_FILE
+# source ".env.remote"
+export $(cut -d= -f1 $ENV_FILE | egrep '^[A-Z][A-Z_]*' -o)
+
+crystal run src/watch_server.cr

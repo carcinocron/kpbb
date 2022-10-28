@@ -1,0 +1,59 @@
+<%- if (parents = thread.parents) && (p_size = parents.size) > 0 -%>
+  <div class="parent-tree">
+  <%- parents.each_with_index do |parentpost, index| -%>
+    <div class="post p<%= ((p_size || 0) - index) %>" data-post-id="<%= parentpost.id.to_base62 %>">
+      <%-= Kpbb::Ecr::Component.post_row(ctx, parentpost, thread) -%>
+    </div>
+  <%- end -%>
+  </div>
+<% end -%>
+
+<form action="<%= post.relative_url %>" method="POST" class="f1">
+  <h1>Edit <%= post.ptype.dname.titleize %></h1>
+
+  <% if post.ptype.has_title? %>
+  <div class="form-group">
+    <label for="title">title</label>
+    <input class="form-control <%= ctx.errors.form_input_class "title" %>"
+      type="text" name="title" value="<%= ctx.old "title", post.title %>" />
+    <%= ctx.errors.form_group_p "title" -%>
+  </div>
+  <% end %>
+  <% if post.ptype.has_tags? %>
+  <div class="form-group">
+    <label for="tags">tags</label>
+    <input class="form-control <%= ctx.errors.form_input_class "tags" %>"
+      type="text" name="tags" value="<%= ctx.old "tags", post.tags %>" />
+    <%= ctx.errors.form_group_p "tags" -%>
+  </div>
+  <% end %>
+  <% if post.ptype.has_url? %>
+  <div class="form-group">
+    <label for="url">url</label>
+    <input class="form-control <%= ctx.errors.form_input_class "url" %>"
+      type="text" name="url" value="<%= ctx.old "url", (post.url || "") %>" />
+    <%= ctx.errors.form_group_p "url" -%>
+  </div>
+  <% end %>
+  <div class="form-group">
+    <label for="body_md">body</label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "body_md" %>" name="body_md" rows=3><%= ctx.old "body_md", post.body_md %></textarea>
+    <%= ctx.errors.form_group_p "body_md" -%>
+  </div>
+  <div class="form-group fg-border p-1">
+    <%- name = "draft" -%>
+    <%- default_value = one_or_zero_s(post.draft) -%>
+    <%- value = "1" -%>
+    <%- label = "Draft" -%>
+    <%= component "form/input_radio" -%>
+    <%- value = "0" -%>
+    <%- label = "Publish Now" -%>
+    <%= component "form/input_radio" -%>
+    <p class="form-hint">Draft: you can publish it later. Note: channel moderators might be able to see your drafts in the future.</p>
+    <p class="form-hint">Published: Visible to users who can see this channel.</p>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>
+<% pp post %>

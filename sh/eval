@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export KEMAL_ENV=test
+export PG_URL=postgresql://kpbb:kpbb@localhost:5433/kpbb_testing?sslmode=require
+export PORT=5001
+export APP_DOMAIN=127.0.0.1
+export KPBB_IMG_API=https://kpbb-img-abcdefghij-ue.a.run.app
+# export SPOOF_CFIPCC=us
+export YOUTUBE_API_KEY=dummyyoutubeapikey
+export APP_KEY=1234567890123456789012345678test
+
+# source "$(dirname $0)/env" ".env.local"
+source "$(dirname $0)/env" ".env.remote"
+
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/drop_all_tables.sql
+# sh/migrate_up
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/public.sql
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/youtube.sql
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/flair.sql
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/webhooks.sql
+
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/insert_requestlog.sql
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/update_user_password.sql
+
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/sp/test/insert_user.sql
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/schemas/test_constraints.sql
+
+time crystal eval --error-trace $@

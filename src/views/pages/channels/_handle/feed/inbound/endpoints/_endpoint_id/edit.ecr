@@ -1,0 +1,37 @@
+<a href="<%= channel.relative_url %>">channel</a>
+<a href="<%= channel.relative_url %>/feed/inbound/endpoints">all endpoints</a>
+<a href="<%= channel.relative_url %>/feed/inbound/payloads">payloads</a>
+
+<h2>Edit Endpoint <%= endpoint.id.to_b62 %></h2>
+
+<form action="<%= channel.relative_url %>/feed/inbound/endpoints/<%= endpoint.id.to_b62 %>" method="POST" class="f1">
+  <div class="form-group">
+    <label for="channel_id">channel</label>
+    <input type="hidden" name="channel_id" value="<%= channel.id.to_b62 %>">
+    <a href="<%= channel.relative_url %>"><%= channel.dname %></a>
+    <%= ctx.errors.form_group_p "channel_id" -%>
+  </div>
+  <div class="form-group">
+    <label for="bio">memo</label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "bio" %>" name="bio" rows=3><%= ctx.old("bio", endpoint.bio) %></textarea>
+    <%= ctx.errors.form_group_p "bio" -%>
+  </div>
+  <select class="form-control a-select <%= ctx.errors.form_input_class "mask" %>" name="mask">
+    <option value="0">post as myself</option>
+    <%- default_mask = endpoint.mask -%>
+    <%- Kpbb::Mask::Mask.each do |mask| -%>
+      <%- mask_s = mask.to_s -%>
+      <option value="<%= mask_s %>" <%= "selected" if mask_s == ctx.old["mask"]? || (ctx.old["mask"].presence.nil? && mask == default_mask) %>>
+        <%= mask.dname %>
+      </option>
+    <%- end -%>
+  </select>
+  <div class="form-group">
+    <label for="default_body_yaml">default body (yaml)</label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "default_body_yaml" %>" name="default_body_yaml" rows=3><%= ctx.old("default_body_yaml", endpoint.default_body.to_yaml.e) %></textarea>
+    <%= ctx.errors.form_group_p "default_body_yaml" -%>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

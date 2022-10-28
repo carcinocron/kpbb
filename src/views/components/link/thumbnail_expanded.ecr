@@ -1,0 +1,20 @@
+
+<%- if video_id = link.meta.youtube_id -%>
+  <iframe width="600" height="338" src="https://www.youtube.com/embed/<%= video_id %>?feature=oembed&enablejsapi=1\" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<%- elsif largest_thumbnail = link.meta.unfurl.try(&.largest_thumbnail?) -%>
+  <%-
+    # no point in offering thumbnails larger
+    # than source image, if the source size is known
+    lt_width = largest_thumbnail.width.try(&.to_i32?)
+  -%>
+  <picture class="img-fluid">
+    <%- Kpbb::Thumbnail.list.reverse.each do |thumbnail| -%>
+      <%- unless lt_width && thumbnail.width > lt_width -%>
+      <source srcset="/img/l<%= thumbnail.c %>/<%= link.id.to_base62 %>.png"<% if thumbnail.width %> media="(min-width: <%= thumbnail.width %>px)"<% end %>>
+      <%- end -%>
+    <%- end -%>
+    <img src="/img/la/<%= link.id.to_base62 %>.png" alt="Link Thumbnail"/>
+  </picture>
+<%- else -%>
+  No Thumbnail
+<%- end -%>

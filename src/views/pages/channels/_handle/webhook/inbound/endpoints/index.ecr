@@ -1,0 +1,80 @@
+<a href="<%= channel.relative_url %>">channel</a>
+
+<h2><a href="<%= channel.relative_url %>/webhook/inbound/endpoints">Channel Webhook Inbound Endpoints</a></h2>
+
+<a href="<%= channel.relative_url %>/webhook/inbound/endpoints">all endpoints</a>
+<a href="<%= channel.relative_url %>/webhook/inbound/payloads">payloads</a>
+
+<div class="btn-group float-right">
+  <a href="<%= channel.relative_url %>/webhook/inbound/endpoints/create" class="btn btn-success">Create</a>
+  <%- if ctx.env.params.query.falsey?("active") -%>
+  <a href="<%= channel.relative_url %>/webhook/inbound/endpoints" class="btn btn-success">Active</a>
+  <%- else -%>
+  <a href="<%= channel.relative_url %>/webhook/inbound/endpoints?active=0" class="btn btn-success">Decommissioned</a>
+  <%- end -%>
+</div>
+
+<%-= page.render_controls -%>
+
+<br>
+
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Client ID</th>
+      <th>Description</th>
+      <th>Last Active</th>
+      <th>Last Posted</th>
+      <th>Next Post</th>
+      <th>Created</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%- page.collection.each do |endpoint| -%>
+    <tr>
+      <td>
+        <a href="<%= channel.relative_url %>/webhook/inbound/endpoints/<%= endpoint.id.to_b62 %>">
+          <%= endpoint.id.to_b62 -%>
+        </a>
+      </td>
+      <td class="text-monospace">
+        <a href="<%= channel.relative_url %>/webhook/inbound/endpoints/<%= endpoint.id.to_b62 %>">
+          <%= endpoint.uuid.to_base62 -%>
+        </a>
+      </td>
+      <td><%= endpoint.bio %></td>
+      <td>
+        <%- if at = endpoint.lastactive_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = endpoint.lastposted_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = endpoint.nextpost_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+      <td>
+        <%- if at = endpoint.created_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+    </tr>
+  <%- end -%>
+  </tbody>
+</table>
+
+<%-= page.render_controls if page.show_bottom_controls -%>

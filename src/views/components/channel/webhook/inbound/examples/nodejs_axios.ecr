@@ -1,0 +1,26 @@
+<details>
+<summary>NodeJS (axios)</summary>
+
+<div class="card card-body <% if ctx.theme.dark? %>bg-dark<% else %>bg-light<% end %>">
+<pre class="text-monospace">
+<code>
+import axios from 'axios';
+
+const client = axios.create({
+  baseURL: '<%= ctx.base_url.sub("https", ctx.env.request.origin_protocol) %>/webhook/<%= client_id %>',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Accept': 'application/json',
+    'X-Webhook-Auth': '<%= secret %>',
+  },
+});
+
+const params = new URLSearchParams();
+params.append('title', 'test');
+params.append('url', 'https://www.youtube.com/watch?v=ub82Xb1C8os');
+
+const res = await client.post('/posts', params);
+
+console.log(res);
+</code></pre>
+</details>

@@ -1,0 +1,114 @@
+version: 2.0
+shards:
+  accord:
+    git: https://github.com/neovintage/accord.git
+    version: 1.1.0
+
+  any_hash:
+    git: https://github.com/sija/any_hash.cr.git
+    version: 0.2.5
+
+  awscr-s3:
+    git: https://github.com/taylorfinnell/awscr-s3.git
+    version: 0.8.3
+
+  awscr-signer:
+    git: https://github.com/taylorfinnell/awscr-signer.git
+    version: 0.8.2
+
+  backtracer:
+    git: https://github.com/sija/backtracer.cr.git
+    version: 1.2.1
+
+  base62:
+    git: https://github.com/iomcr/base62.git
+    version: 0.1.0+git.commit.5bfc85899501736e4b4e9f3b4cb5d63861baa68b
+
+  cron_parser:
+    git: https://github.com/kostya/cron_parser.git
+    version: 0.4.0
+
+  cron_scheduler:
+    git: https://github.com/kostya/cron_scheduler.git
+    version: 0.4.0
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.9.0
+
+  exception_page:
+    git: https://github.com/crystal-loot/exception_page.git
+    version: 0.1.4
+
+  get-youtube-id:
+    git: https://github.com/iomcr/get-youtube-id.git
+    version: 0.1.0+git.commit.3c4991a7cbec3c02d0b59de45f2353f0b7f6c0ea
+
+  helmet:
+    git: https://github.com/evanhahn/crystal-helmet.git
+    version: 0.2.2
+
+  humanize_time:
+    git: https://github.com/mamantoha/humanize_time.git
+    version: 0.6.0
+
+  i18n:
+    git: https://github.com/techmagister/i18n.cr.git
+    version: 0.3.1
+
+  i18n_plural_rules:
+    git: https://github.com/mamantoha/i18n_plural_rules.git
+    version: 0.1.1
+
+  iom-encrypt:
+    git: https://github.com/iomcr/iom-encrypt.git
+    version: 0.1.0+git.commit.ef5f7eeafdcdb2668cc9d408a71cdb893e5cad75
+
+  kemal:
+    git: https://github.com/kemalcr/kemal.git
+    version: 0.26.1+git.commit.a8c0f09b858162bd13c96663febef5527b322a32
+
+  kemal-session:
+    git: https://github.com/iomcr/kemal-session.git
+    version: 0.14.0+git.commit.5f89b564fb7cda8ffa12dbf19f3faff406ccc307
+
+  kilt:
+    git: https://github.com/jeromegn/kilt.git
+    version: 0.4.0
+
+  markd:
+    git: https://github.com/icyleaf/markd.git
+    version: 0.4.2
+
+  pg:
+    git: https://github.com/will/crystal-pg.git
+    version: 0.21.1
+
+  php-shell-exec:
+    git: https://github.com/iomcr/php-shell-exec.git
+    version: 0.1.0+git.commit.97fbf446c180de108039a15051e5ff53a04588f3
+
+  php-strtotime:
+    git: https://github.com/iomcr/php-strtotime.git
+    version: 0.1.3+git.commit.67fb637ec00ff38f2a3e1b068c71b0378f628b5a
+
+  radix:
+    git: https://github.com/luislavena/radix.git
+    version: 0.3.9
+
+  raven:
+    git: https://github.com/sija/raven.cr.git
+    version: 1.9.1+git.commit.f6de0fed3e9456da0c8d17f125cf3be316a940db
+
+  sentry:
+    git: https://github.com/samueleaton/sentry.git
+    version: 0.4.0
+
+  spec-kemal:
+    git: https://github.com/kemalcr/spec-kemal.git
+    version: 0.5.0+git.commit.64b89c719234ceb92c0a14762dce3afc6257fffc
+
+  webslug:
+    git: https://github.com/iomcr/webslug.git
+    version: 0.1.0+git.commit.b054aecaa3a15497fb0896cd0e295a0e07334352
+

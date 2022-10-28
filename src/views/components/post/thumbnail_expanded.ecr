@@ -1,0 +1,10 @@
+<div class="media-body expanded-thumbnail text-center" data-post-id="<%= post.id.to_base62 %>">
+  <%- if link -%>
+    <%-= component "link/thumbnail_expanded" -%>
+  <%- end -%>
+  <% if post.body_html && !post.body_html.empty? -%>
+  <p class="body-html">
+    <%= post.body_html -%>
+  </p>
+  <% end -%>
+</div>

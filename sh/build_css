@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+NODE_ENV=production node_modules/.bin/tailwindcss --input assets/tailwindcss/app.css --output public/css/app.css
+NODE_ENV=production node_modules/.bin/tailwindcss --input assets/tailwindcss/app.css --output public/css/app.min.css --minify

@@ -1,0 +1,16 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <span>
+        <%= domain.domain -%>
+      </span>
+      <small class="text-muted">
+        <%- if domain.active -%>
+          active
+        <%- else -%>
+          inactive
+        <%- end -%>
+      </small>
+    </h5>
+  </div>
+</div>

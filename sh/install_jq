@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+# This scripts installs jq: http://stedolan.github.io/jq/
+# note: a specific version 1.6 is required. Later versions will probably work.
+
+# DOWNLOAD_URL=https://stedolan.github.io/jq/download/linux64/jq
+DOWNLOAD_URL=https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+FILE=jq-linux64
+JQ=/usr/bin/jq
+# does not handle redirct
+# curl --max-redirs 1 $DOWNLOAD_URL > $JQ && chmod +x $JQ
+
+if [ -f "$FILE" ]; then
+    echo "$FILE exists."
+else
+    wget --max-redirect 1 --https-only $DOWNLOAD_URL
+fi
+
+cp jq-linux64 $JQ
+chmod +x $JQ
+ls -la $JQ
+jq -V

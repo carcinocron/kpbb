@@ -1,0 +1,26 @@
+{
+  "name": "twitter_ss",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon --exec 'functions-framework --target=fn'",
+    "test": "npm run unit-test"
+  },
+  "dependencies": {
+    "@google-cloud/debug-agent": "^5.1.0",
+    "@sentry/node": "^5.18.1",
+    "download": "^8.0.0",
+    "file-type": "^14.7.1",
+    "imagickal": "^4.2.0",
+    "temp": "^0.9.1",
+    "tmp": "^0.2.1"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.7.1",
+    "nodemon": "^2.0.4"
+  },
+  "nodemonConfig": {
+    "ignore": [".gcloudignore"],
+    "delay": "500"
+  }
+}

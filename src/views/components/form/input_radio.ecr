@@ -1,0 +1,4 @@
+<div class="flex">
+  <input type="radio" name="<%= name %>" id="<%= name %>radio<%= value %>" value="<%= value %>" <%= "checked" if ctx.old(name, default_value) == value %> class="<%= ctx.errors.form_input_class name %>">
+  <label for="<%= name %>radio<%= value %>"><%= label %></label>
+</div>

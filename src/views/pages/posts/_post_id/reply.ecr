@@ -1,0 +1,58 @@
+<h2>Create Reply</h2>
+
+<form action="/posts" method="POST" class="f1">
+  <div class="form-group">
+    <label for="title">title (optional)</label>
+    <input class="form-control <%= ctx.errors.form_input_class "title" %>" type="text" name="title" value="<%= ctx.old["title"] %>" />
+    <%= ctx.errors.form_group_p "title" -%>
+  </div>
+  <div class="form-group">
+    <label for="tags">tags</label>
+    <input class="form-control <%= ctx.errors.form_input_class "tags" %>" type="text" name="tags" value="<%= ctx.old["tags"] %>" />
+    <%= ctx.errors.form_group_p "tags" -%>
+  </div>
+  <div class="form-group">
+    <label for="channel_id">channel</label>
+    <select class="form-control a-select <%= ctx.errors.form_input_class "channel_id" %>" name="channel_id">
+      <option value="">select channel</option>
+      <%- channels.each do |c| -%>
+        <option value="<%= c.id.to_b62 %>" <%= "selected" if c.id.to_b62 == ctx.old["channel_id"] || (ctx.old["channel_id"].presence.nil? && c.id.to_b62 == ctx.env.params.query["channel_id"]?) %>>
+          <%= c.dname %> (<%= c.handle %>)
+        </option>
+      <%- end -%>
+    </select>
+    <%= ctx.errors.form_group_p "channel_id" -%>
+  </div>
+  <div class="form-group">
+    <label for="url">url</label>
+    <input class="form-control <%= ctx.errors.form_input_class "url" %>" type="text" name="url" value="<%= ctx.old["url"] %>" />
+    <%= ctx.errors.form_group_p "url" -%>
+  </div>
+  <div class="form-group">
+    <label for="body_md">body</label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "body_md" %>" name="body_md" rows=3><%= ctx.old["body_md"] %></textarea>
+    <%= ctx.errors.form_group_p "body_md" -%>
+  </div>
+
+  <div class="form-group">
+    <label for="schedule_publish_at">schedule publish at</label>
+    <input class="form-control <%= ctx.errors.form_input_class "schedule_publish_at" %>" type="text" name="schedule_publish_at" value="<%= ctx.old["schedule_publish_at"] %>" />
+    <%= ctx.errors.form_group_p "schedule_publish_at" -%>
+  </div>
+
+  <div class="form-check">
+    <%- name = "draft" -%>
+    <%- default_value = "0" -%>
+    <%- value = "1" -%>
+    <%- label = "Draft" -%>
+    <%= component "form/input_radio" -%>
+    <%- value = "0" -%>
+    <%- label = "Publish Now" -%>
+    <%= component "form/input_radio" -%>
+    <p>Draft: you can publish it later. Note: channel moderators might be able to see your drafts in the future.</p>
+    <p>Published: Visible to users who can see this channel.</p>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

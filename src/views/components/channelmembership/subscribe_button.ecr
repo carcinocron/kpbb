@@ -1,0 +1,19 @@
+<% if ctx.user.id -%>
+<form method="POST" class="f2 fr subscribe" action="/channelmembership?channel_id=<%= channel.id.to_base62 %>&user_id=me">
+  <%- if (channelmembership && channelmembership.follow) -%>
+  <input type="hidden" name="follow" value="0" />
+  <button class="btn btn-danger btn-sm">
+    Unsubscribe
+  </button>
+  <%- else -%>
+  <input type="hidden" name="follow" value="1" />
+  <button class="btn btn-primary btn-sm">
+    Subscribe
+  </button>
+  <%- end -%>
+</form>
+<% else -%>
+<a class="btn btn-primary btn-sm fr subscribe" href="/login?return_to=<%= URI.encode_path(ctx.path_with_query) %>">
+  Subscribe
+<a>
+<% end -%>

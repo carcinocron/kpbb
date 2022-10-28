@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+  #  -i, --input              Input file
+  #  -o, --output             Output file
+  #  -w, --watch              Watch for changes and rebuild as needed
+  #      --jit                Build using JIT mode
+  #      --purge              Content paths to use for removing unused classes
+  #      --postcss            Load custom PostCSS configuration
+  #  -m, --minify             Minify the output
+  #  -c, --config             Path to a custom config file
+  #      --no-autoprefixer    Disable autoprefixer
+  #  -h, --help               Display usage information
+
+NODE_ENV=production node_modules/.bin/tailwindcss \
+  --input assets/tailwindcss/app.css \
+  --output public/css/app.css \
+  --watch

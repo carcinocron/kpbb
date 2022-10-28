@@ -1,0 +1,136 @@
+<h2><a href="/todo">Todo</a></h2>
+
+<h4>To leave Phase 1 (Alpha)</h4>
+<ul>
+  <li>User Queue</li>
+  <li>User Badges</li>
+  <li>Post Flair</li>
+  <li>Post Tags</li>
+  <li>Comments</li>
+  <li>Image Post - B2</li>
+  <li>Post link to Youtube</li>
+  <li>Post link to Tweet</li>
+  <li>Post links have thumbnails</li>
+  <li>Domain hints on links should expand to include usernames for websites like username.tumblr.com and twitter.com/username, even youtube despite youtuber name not in URL</li>
+  <li>RSS</li>
+  <li>Declare intent to implement (or not) Activity Pub</li>
+  <li>Add loading animations for javascript users</li>
+  <li>OTP + backup codes</li>
+</ul>
+
+<h4>DB todo</h4>
+<ul>
+  <li>last_refreshed_at? private_key?</li>
+  <li>users: {lang,eightvalues}</li>
+  <li>users: show_{avatar,pronoun,nsfw,dname,eightvalues}</li>
+  <li>posts: stickied</li>
+  <li>posts: flagged</li>
+  <li>channel logs: reason</li>
+  <li>mod_user_id, expires</li>
+  <li>non-log table for all of approve, remove, locked, stickied</li>
+</ul>
+
+<h4>Notes or things to look at:<h4>
+<ul>
+  <li>https://github.com/amberframework/granite/blob/master/docs/crud.md</li>
+  <li>https://github.com/mamantoha/kemal_and_clear_sample_app</li>
+  <li>https://github.com/icyleaf/markd</li>
+  <li>https://github.com/arcage/crystal-email</li>
+  <li>Redis<br>
+    <ul>
+      <li>sessions</li>
+      <li>Rate limit: https://github.com/WJWH/prorate-cr</li>
+      <li>Rate limit: https://github.com/kostya/limiter</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>To leave Phase 2 (Beta)<h4>
+<ul>
+  <li>clamscan+gcf</li>
+</ul>
+
+<h4>To leave Phase 3 (Gamma, 1.0 release)<h4>
+<ul>
+  <li>Tree shake https://bootswatch.com/darkly/ to a smaller size</li>
+  <li>JS datepicker for scheduling post publish</li>
+</ul>
+
+<h4>Random Ideas<h4>
+<ul>
+  <li>Word Cloud</li>
+  <li>requestlogs -> BigQuery</li>
+  <li>chat feature - PMs + (rooms: groups/channels), wait for first AP app prototype</li>
+  <li>moderators can redact parts of text instead of remove whole text</li>
+  <li>remindme feature</li>
+</ul>
+
+activity pub: we've not really fully looked into that, best I can say is that we will support RSS and we need to make an internal decision on what we'll do with Activity Pub. AFAIK it's not incompatible with our core vision.
+
+The first publicly accessible release (lets call it an Alpha Release) will feel like a hackernews clone
+- with thumbnails (youtube being the first scenario)
+- posts (savable, hidable)
+- optional (maybe default) dark theme (in fact themes will be a public github repo)
+- tags (tumblr style)
+- channels (our word for subreddit or blog), subscribable+hidable
+- inbound webhooks (use IFTTT to post into a channel)
+- inbound feeds (use RSS/atom to post into a channel)
+- reddit style comments. (savable)
+- could happen in less than 2 months (the main dev has a fulltime job)
+
+Some things that might miss our first release, but will get done in 6ish months or less soon after
+- RSS
+- voting on posts/comments
+- report button
+- directly uploading non-animated images without 3rd party host like imgur/giphy
+- post/comment flair (we're doing a bot-driven flair system where users can opt-out of the default flair bots) example include "show name of youtube channel and video title when someone comments a link to youtube".
+- notifications + inbox (email address _never_ required)
+- 2FA (authy/google authenticator style, no SMS) + backup codes
+- outbound webhooks
+- outbound rss/atom feeds
+
+Some things/goals that might need more fleshing out or more yakshaving before we can commit to a timeframe:
+- flairbots written by users
+- Not sure what kind of user-managed/created bots will be allowed outside of webhooks and flair
+- community driven moderation that is resilient to power users, land rushers, power mods
+
+<h4>Badges Feature</h4>
+
+<ul>
+  <li>Badges earned by: comments, getting upvoted (lost by downvotes), days active, threads viewed, using features</li>
+  <li>Badge Points? Spend points on store? lose badges on downvotes? Badge Tech Tree?</li>
+  <li>Badges per channel?</li>
+</ul>
+
+<h4>Search Backend<h4>
+<ul>
+  <li>Determine postgres can't do good enough</li>
+  <li>Is algolia cheap enough?</li>
+  <li>Elastio: start at $5/month (ElasticSearch manager)</li>
+  <li>https://ambar.cloud/pricing/ with selfhost option (docker-first, maybe with mongodb)</li>
+  <li>https://old.reddit.com/r/rust/comments/b4hn69/fast_lightweight_search_engine_an_alternative_to/</li>
+  <li>https://github.com/valeriansaliou/sonic already has cr client: https://github.com/babelian/sonic-crystal</li>
+</ul>
+
+<h4>lowjs anti-spam ideas</h4>
+<ul>
+  <li>Enter the last three numbers seen in dg7564gh
+Write the 2 first letters seen in 56kdgt
+Write the numbers seen in no2645spam
+Write the uppercase letters seen in dfsGHFuyt</li>
+  <li>render question as image, maybe even answers if multiple choice</li>
+  <li>minimum karma unless captcha goes away (without invite code, if inviter is in good standing)</li>
+  <li>minimum account age</li>
+  <li>maximum activity per minute (IP based)</li>
+  <li>"pick the one (of 10) webp that look like this SVG"</li>
+  <li>IP ban where ipaddress.active IS FALSE</li>
+  <li>check IP+email from the "Stop Forum Spam" DB and http://www.projecthoneypot.org/?rf=62759 DB</li>
+</ul>
+
+https://stackoverflow.com/a/46806512
+
+
+Option to not show results until poll is done
+Allowing only users with a certain karma threshold and account age to participate
+Enable or disable anonymous voting
+Ranked Choice

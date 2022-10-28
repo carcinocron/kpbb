@@ -1,0 +1,70 @@
+# In this directory, run the following command to build this builder.
+# $ gcloud builds submit
+
+steps:
+# Build all supported versions.
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--tag=gcr.io/$PROJECT_ID/kpbb-server'
+  - '--file=src/server.Dockerfile'
+  - '.'
+  id: 'kpbb-server'
+
+# - name: 'gcr.io/cloud-builders/docker'
+#   args:
+#   - 'build'
+#   - '--tag=gcr.io/$PROJECT_ID/kpbb-cron'
+#   - '--file=src/cron.Dockerfile'
+#   - '.'
+#   id: 'kpbb-cron'
+
+# - name: 'gcr.io/cloud-builders/docker'
+#   args:
+#   - 'build'
+#   - '--tag=gcr.io/$PROJECT_ID/kpbb-mock-serve'
+#   - '--file=functions/mock_serve/Dockerfile'
+#   - './functions/mock_serve'
+#   id: 'kpbb-mock-serve'
+
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   args:
+#     - 'run'
+#     - 'deploy'
+#     - 'pb6a7c22-b'
+#     - '--image'
+#     - 'gcr.io/$PROJECT_ID/kpbb-server'
+#     - '--region=us-west1'
+#     - '--platform'
+#     - 'managed'
+#     - '--allow-unauthenticated'
+#     - '--concurrency=80'
+#     - '--cpu=1' #1,2,4
+#     - '--memory=128MiB' # min 128MiB
+#     - '--timeout=20s'
+#     - '--set-env-vars=PG_URL=postgresql://username:password@127.0.0.404:5432/dbname?sslmode=require,SENTRY_DSN=https://REDACTED@REDACTED.ingest.sentry.io/REDACTED'
+
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   args:
+#     - 'run'
+#     - 'deploy'
+#     - 'kpbb-mock-serve'
+#     - '--image'
+#     - 'gcr.io/$PROJECT_ID/kpbb-mock-serve'
+#     - '--region=us-west1'
+#     - '--platform'
+#     - 'managed'
+#     - '--allow-unauthenticated'
+#     - '--concurrency=80'
+#     - '--cpu=1' #1,2,4
+#     - '--memory=128MiB' # min 128MiB
+#     - '--timeout=10s'
+
+images:
+- 'gcr.io/$PROJECT_ID/kpbb-server'
+# - 'gcr.io/$PROJECT_ID/kpbb-cron'
+# - 'gcr.io/$PROJECT_ID/kpbb-mock-serve'
+
+# next up: "deploooooy"
+
+

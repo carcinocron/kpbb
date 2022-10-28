@@ -1,0 +1,12 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <%- if useragent.value.presence -%>
+        <pre class="text-monospace"><%= useragent.value %></pre>
+      <%- else -%>
+        None
+      <%- end -%>
+    </h5>
+    <p><%= useragent.lastseen_at %></p>
+  </div>
+</div>

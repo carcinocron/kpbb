@@ -1,0 +1,12 @@
+<nav class="page-contr" aria-label="Page navigation">
+  <%- if page.number > 1 -%>
+    <a class="btn btn-s-o" href="<%= page.previous_uri.e %>">Previous</a>
+  <%- else -%>
+    <a class="btn btn-s-o disabled" aria-hidden="true">Previous</a>
+  <%- end -%>
+  <%- if page.has_more -%>
+    <a class="btn btn-s-o" href="<%= page.next_uri.e %>">Next</a>
+  <%- else -%>
+    <a class="btn btn-s-o disabled" aria-hidden="true">Next</a>
+  <%- end -%>
+</nav>

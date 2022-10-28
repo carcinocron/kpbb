@@ -1,0 +1,87 @@
+<a href="<%= channel.relative_url %>">channel</a>
+<a href="<%= channel.relative_url %>/webhook/inbound/endpoints">all endpoints</a>
+<a href="<%= channel.relative_url %>/webhook/inbound/payloads?endpoint_id=<%= endpoint.id.to_b62 %>">payloads</a>
+
+<h2>
+  Endpoint: <span class="text-monospace"><%= endpoint.id.to_b62 %></span>
+  <a class="btn btn-danger" href="<%= channel.relative_url %>/webhook/inbound/endpoints/<%= endpoint.id.to_b62 %>/edit">edit</a>
+</h2>
+
+<table class="table">
+  <tbody>
+    <tr>
+      <th>Client ID</th>
+      <td class="text-monospace"><%= client_id = endpoint.uuid.to_base62 %></td>
+    </tr>
+    <tr>
+      <th>Memo</th>
+      <td class="text-monospace"><%= endpoint.bio %></td>
+    </tr>
+    <tr>
+      <th>Created</th>
+      <td>
+        <%- if at = endpoint.created_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          unknown
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Last Active</th>
+      <td>
+        <%- if at = endpoint.lastactive_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Active</th>
+      <td><% if endpoint.active %>Yes<% else %>No<% end %></td>
+    </tr>
+    <tr>
+      <th>Last Posted</th>
+      <td>
+        <%- if at = endpoint.lastposted_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Next Post</th>
+      <td>
+        <%- if at = endpoint.nextpost_at -%>
+          <%-= component "timeago" -%>
+        <%- else -%>
+          never
+        <%- end -%>
+      </td>
+    </tr>
+    <tr>
+      <th>Default Body</th>
+      <td class="text-monospace" style="white-space: pre;"><%-= endpoint.default_body.to_yaml.e %></td>
+    </tr>
+  </tbody>
+</table>
+
+<% if endpoint.active -%>
+<form method="POST" action="<%= channel.relative_url %>/webhook/inbound/endpoints/<%= endpoint.id.to_b62 %>">
+  <input type="hidden" name="active" value="0" />
+  <button class="btn btn-danger">
+    Decommission
+  </button>
+</form>
+<% end -%>
+
+<br />
+<h2>Examples</h2>
+
+<%- secret = "<strong>$WEBHOOK_SECRET</strong>" -%>
+<%-= component "channel/webhook/inbound/examples/curl" %>
+<%-= component "channel/webhook/inbound/examples/crystal" %>
+<%-= component "channel/webhook/inbound/examples/nodejs_axios" %>
+<%-= component "channel/webhook/inbound/examples/ifttt" %>

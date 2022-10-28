@@ -1,0 +1,7 @@
+<%- if video_id = link.meta.youtube_id -%>
+  <img class="icon img-thumbnail mx-auto click-to-expand" data-link-id="<%= link.id.to_base62 %>" src="/img/ytv/<%= video_id %>/default.jpg" alt="Youtube Thumbnail">
+<%- elsif link.meta.unfurl.try(&.thumbnail) -%>
+  <img class="icon img-thumbnail mx-auto click-to-expand" data-link-id="<%= link.id.to_base62 %>" src="/img/la/<%= link.id.to_base62 %>.png" alt="Link Thumbnail">
+<%- else -%>
+  <img class="icon icon-48 click-to-expand" data-link-id="<%= link.id.to_base62 %>" src="/static/fi/<%= ctx.theme.id.to_b62 %>/link.svg" alt="No thumbnail">
+<%- end -%>

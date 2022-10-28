@@ -1,0 +1,22 @@
+<h2><a href="/referers">Referers</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-referers">
+<% page.collection.each do |referer| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= referer.relative_url %>">
+        </a>
+      </h5>
+      <pre><code class="text-monospace"><%= referer.value %></code></pre>
+      <p><%= referer.lastseen_at %></p>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

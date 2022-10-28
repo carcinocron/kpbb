@@ -1,0 +1,7 @@
+require "./channeljob"
+require "./recentlink"
+require "./recentyoutube"
+require "./feed/inbound/fetch"
+require "./feed/inbound/payload"
+require "./webhook/inbound/payload"
+require "./recentlinkabbr_youtube"

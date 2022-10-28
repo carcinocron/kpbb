@@ -1,0 +1,8 @@
+<% if tags = post.tags.presence -%>
+  <%- Kpbb::Tag.parse(tags.split ",").each do |value| -%>
+    <a href="/posts/?tag=<%= value %>">
+      <%= value -%>
+    </a>
+  <%- end -%>
+<% end -%>
+

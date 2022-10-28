@@ -1,0 +1,8 @@
+<nav class="mx-auto mw-512">
+  <a <% if ctx.path.ends_with?("/profile") %>class="active" <% end %>href="/settings/profile">Profile</a>
+  <a <% if ctx.path.ends_with?("/email") %>class="active" <% end %>href="/settings/email">Email</a>
+  <a <% if ctx.path.ends_with?("/password") %>class="active" <% end %>href="/settings/password">Password</a>
+  <% if false %>
+  <a <% if ctx.path.ends_with?("/theme") %>class="active" <% end %>href="/settings/theme">Theme</a>
+  <% end %>
+</nav>

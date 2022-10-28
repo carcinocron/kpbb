@@ -1,0 +1,43 @@
+<div class="media">
+  <%- if avatar = channel.avatar.presence -%>
+  <img class="mr-3 avatar" width="128" height="128" src="<%= avatar %>" alt="Channel avatar">
+  <%- end -%>
+  <div class="media-body">
+    <h5 class="mt-0">
+      <span>
+        <%= channel.dname -%>
+      </span>
+      <small class="text-muted">
+        <%- if channel.public -%>
+          public
+        <%- else -%>
+          private
+        <%- end -%>
+      </small>
+      <%- if channelmembership && channelmembership.rank > 0 -%>
+        <a href="<%= channel.relative_url %>/edit">
+          edit
+        </a>
+        <a href="<%= channel.relative_url %>/webhook/inbound/endpoints">
+          inbound webhooks
+        </a>
+        <a href="<%= channel.relative_url %>/feed/inbound/endpoints">
+          inbound feeds
+        </a>
+      <%- end -%>
+      <a href="/posts?channel_id=<%= channel.id.to_b62 %>">
+        posts
+      </a>
+      <%- if channelmembership && channelmembership.banned -%>
+        <div class="alert alert-danger">You are banned from this channel</div>
+      <%- end -%>
+      <%= component "channelmembership/subscribe_button" -%>
+    </h5>
+
+    <%- if channel.bio && !channel.bio.empty? -%>
+      <%= channel.bio -%>
+    <%- else -%>
+      <em class="text-muted">This channel does not have a bio.</em>
+    <%- end -%>
+  </div>
+</div>

@@ -1,0 +1,1 @@
+{"data":[{"id":1002,"relative_url":"/channels/hiddenchannel","handle":"hiddenchannel","dname":"channel name","bio":"","avatar":"","banner":"","public":true,"listed":true,"membership":{"banned":false,"hidden":true,"follow":false}}],"perpage":15,"offset":0,"has_more":false,"morequery":{},"path_with_query":"/channels?hidden=1"}

@@ -1,0 +1,107 @@
+#!/usr/bin/env crystal
+
+require "pg"
+require "option_parser"
+
+module Iom::Cli
+  enum SubCommand
+    Base
+    DbMakeMigration
+    DbMigrate
+  end
+
+  struct Migration
+  end
+
+  struct MigrationMaker
+  end
+
+  struct MigrationRunner
+    getter db : ::DB::Database
+
+    def initialize(
+      @db : DB::Database,
+      @migration_path : String = "db/migrations"
+    )
+    end
+  end
+
+  macro read_env
+    parser.on("-e ENV", "--env=ENV", "Read .env file") do |name|
+      pp ({:name => name})
+      # puts parser
+      File.each_line(name) do |line|
+        next unless line.size > 0
+        next if line[0] == '#'
+        next if line[0] == ' '
+        next unless (index = line.index('='))
+        next unless (key = line[0..index-1].presence)
+        next unless (value = line[(index+1)..].presence)
+        ENV[key] = value
+      end
+      exit
+    end
+  end
+
+  def self.pg_connect
+    PG.connect ENV["PG_URL"]
+  end
+
+  subcommand : SubCommand = SubCommand::Base
+  verbose = false
+  name = "World"
+  make_migration_name : String? = nil
+  parser = ::OptionParser.new do |parser|
+    parser.banner = "Usage: example [subcommand] [arguments]"
+    parser.on("db:make-migration", "Make Migration") do |make_migration_name|
+      pp "db:make-migration"
+      pp ({:make_migration_name => make_migration_name})
+      subcommand = SubCommand::DbMakeMigration
+      parser.banner = "Usage: no additional args"
+      read_env
+    end
+    parser.on("db:migrate", "Run Migrations") do
+      pp "db:migrate"
+      subcommand = SubCommand::DbMigrate
+      parser.banner = "Usage: --step=1  --env=.env"
+      read_env
+      step = -1
+      parser.on("", "--step=STEP", "set maximum number of migrations to run.") do |value|
+        step = value.to_i
+      end
+      parser.on("-n NAME", "--name=NAME", "Specify the name of the migration") { |name| migration_name = name }
+      parser.missing_option do |missing_option|
+        next if missing_option == "--env"
+        next if missing_option == "--step"
+        pp ({:missing_option => missing_option})
+        exit
+      end
+    end
+    parser.on("-v", "--verbose", "Enable verbose output") { verbose = true }
+    parser.on("-h", "--help", "Show this help") do
+      puts parser
+      exit
+    end
+    parser.missing_option do |missing_option|
+      next if missing_option == "--env"
+      pp ({:missing_option => missing_option})
+      exit
+    end
+  end
+
+  parser.parse
+
+  if subcommand == SubCommand::DbMakeMigration
+    pp ({:line => __LINE__})
+    db = pg_connect
+    mr = MigrationRunner.new(db)
+  elsif subcommand == SubCommand::DbMigrate
+    pp ({:line => __LINE__})
+    db = pg_connect
+    db = PG.connect ENV["PG_URL"]
+    mr = MigrationRunner.new(db)
+  else
+    pp ({:line => __LINE__})
+    pp "invalid subcommand"
+  end
+end

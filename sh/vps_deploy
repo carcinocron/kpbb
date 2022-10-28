@@ -1,0 +1,105 @@
+#!/bin/bash
+if [[ !$(/usr/bin/id -u) -ne 0 ]]; then
+    echo "Do Not Run This As Root"
+    exit
+fi
+
+export PATH=/usr/lib/postgresql/12/bin/:$PATH
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+PROJECT_ID=REDACTED_GOOGLE_CLOUD_PROJECT_ID
+IMAGE_NAME=kpbb
+DEPLOY_NAME=kpbb
+TAG=kpbb
+
+mkdir -p ./bin
+
+REPLACE_DOCKER_CONTAINER () {
+  IMAGE_NAME=$1
+  EXPOSE_PORT=$2
+
+  scp ./bin/$IMAGE_NAME.latest.tar forge@prod4:/home/forge/$IMAGE_NAME.latest.tar
+
+  ssh forge@prod4 << EOF
+  set -e # halt on error
+  set -x # echo cmds before executing
+  set -u # fail on undefined variable
+  set -o pipefail # force pipelines to fail on fail
+
+  OLD_IMAGE=\$(docker images | grep $IMAGE_NAME | awk '{print \$3}' || echo '');
+
+  if [ -n "\$OLD_IMAGE" ]
+  then
+
+    OLD_CONTAINER=\$(docker ps | grep \$OLD_IMAGE | awk '{print \$1}' || echo '');
+
+    if [ -n "\$OLD_CONTAINER" ]
+    then
+
+      docker stop \$OLD_CONTAINER;
+      docker rm \$OLD_CONTAINER || docker rm -f \$OLD_CONTAINER;
+
+    else
+      echo "no container for $IMAGE_NAME found on server"
+    fi
+
+    docker rmi \$OLD_IMAGE || docker rmi -f \$OLD_IMAGE;
+
+  else
+    echo "no image for $IMAGE_NAME (container_id=\$OLD_IMAGE) found on server"
+  fi
+
+  docker load --input ~/$IMAGE_NAME.latest.tar;
+  NEW_IMAGE=\$(docker images | grep $IMAGE_NAME | awk '{print \$3}' || echo '');
+  docker run -d --restart=always \$NEW_IMAGE --hostname $IMAGE_NAME --network=host -p $EXPOSE_PORT --add-host=pg:127.0.0.404  ;
+
+  # rm ~/$IMAGE_NAME.latest.tar;
+
+  echo 'done';
+
+EOF
+}
+
+PG_URL=postgresql://username:password@127.0.0.404:5432/dbname?sslmode=require
+BACKUP_DATA_FILE=db/backups/$(date +"%Y_%m_%d_%H_%M_%S")_data.dump
+BACKUP_SCHEMA_FILE=db/backups/$(date +"%Y_%m_%d_%H_%M_%S")_schema.sql
+
+echo "backing up to "$BACKUP_DATA_FILE
+pg_dump -d $PG_URL -T migrations -T sessions -T public.sessions --format=custom -f $BACKUP_DATA_FILE --data-only --no-owner
+
+echo "backing up to "$BACKUP_SCHEMA_FILE
+pg_dump -d $PG_URL -f $BACKUP_SCHEMA_FILE --schema-only --no-owner
+
+ls -la $BACKUP_DATA_FILE $BACKUP_SCHEMA_FILE
+
+PG_URL=postgresql://kpbb:password@127.0.0.404:5432/kpbb?sslmode=require
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < db/sql/drop_all_tables.sql
+PG_URL=$PG_URL ./sh/migrate_up
+echo "restoring "$BACKUP_DATA_FILE" to prod4"
+# psql -d $PG_URL -f $BACKUP_DATA_FILE
+pg_restore -d $PG_URL --data-only --no-acl --no-owner --no-privileges $BACKUP_DATA_FILE
+
+# docker build . -f src/cron.Dockerfile --tag kpbb-cron:latest
+# docker build . -f src/server.Dockerfile --tag kpbb-server:latest
+# docker save --output ./bin/kpbb-cron.latest.tar kpbb-cron:latest
+# docker save --output ./bin/kpbb-server.latest.tar kpbb-server:latest
+# ls -lh ./bin/kpbb-*.latest.tar
+# REPLACE_DOCKER_CONTAINER kpbb-cron 5001:8080
+# REPLACE_DOCKER_CONTAINER kpbb-server 127.0.0.1:5000:8080/tcp
+
+ssh forge@prod4 << EOF
+  set -e # halt on error
+  set -x # echo cmds before executing
+  set -u # fail on undefined variable
+  set -o pipefail # force pipelines to fail on fail
+
+  sudo supervisorctl status kpbb-server kpbb-cron
+  sudo supervisorctl restart kpbb-server kpbb-cron
+  sleep 5s
+  sudo supervisorctl status kpbb-server kpbb-cron
+EOF

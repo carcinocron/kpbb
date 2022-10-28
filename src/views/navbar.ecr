@@ -1,0 +1,36 @@
+<nav>
+  <a href="/home">
+    Home
+    <span class="sr-only">home</span>
+  </a>
+  <a href="/channels">
+    Channels
+  </a>
+  <a href="/posts">
+    Posts
+  </a>
+  <%- if ctx.user.id.nil? -%>
+  <a href="/register">
+    Sign Up
+  </a>
+  <%- end -%>
+  <%- if ctx.user.id.nil? -%>
+  <a href="/login">
+    Sign In
+  </a>
+  <%- end -%>
+  <%- if ctx.user.id -%>
+  <a href="/logout">
+    Sign Out
+  </a>
+  <%- end -%>
+  <%- if ctx.user.id -%>
+  <a href="/user/<%= ctx.user.handle %>">
+    Profile
+  </a>
+  <a href="/settings">
+    Settings
+  </a>
+  <%- end -%>
+  </ul>
+</nav>

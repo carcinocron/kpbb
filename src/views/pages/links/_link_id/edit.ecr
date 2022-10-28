@@ -1,0 +1,29 @@
+<h2>Edit Link</h2>
+
+<form action="<%= link.relative_url %>" method="POST" class="f1">
+  <div class="form-group">
+    <label for="url">url</label>
+    <input disabled class="form-control disabled" type="text" name="url" value="<%= link.url %>" />
+  </div>
+  <div class="form-group">
+    <label for="domain_id">domain_id</label>
+    <input disabled class="form-control disabled" type="text" name="domain_id" value="<%= link.domain_id %>" />
+  </div>
+  <div class="form-check">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input <%= ctx.errors.form_input_class "active" %>" type="radio" name="active" id="activeradio1" value="false" <%= "checked" if ctx.old("active", link.active.to_s) == "false" %>>
+      <label class="form-check-label" for="activeradio1">inactive</label>
+      <br>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input <%= ctx.errors.form_input_class "active" %>" type="radio" name="active" id="activeradio2" value="true" <%= "checked" if ctx.old("active", link.active.to_s) == "true" %>>
+      <label class="form-check-label" for="activeradio2">active</label>
+      <br>
+    </div>
+    <p>Active: allowed-ish.</p>
+    <p>Not Active: not allowed-ish.</p>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

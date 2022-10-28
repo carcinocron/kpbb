@@ -1,0 +1,31 @@
+<%- if (parents = thread.parents) && (p_size = parents.size) > 0 -%>
+  <div class="parent-tree">
+  <%- parents.each_with_index do |parentpost, index| -%>
+    <div class="post p<%= ((p_size || 0) - index) %>" data-post-id="<%= parentpost.id.to_base62 %>">
+      <%-= Kpbb::Ecr::Component.post_row(ctx, parentpost, thread) -%>
+    </div>
+  <%- end -%>
+  </div>
+<% end -%>
+
+<div class="post <%= (thread.post_id==post.id ? "thread-ctx" : nil) %>" data-post-id="<%= post.id.to_base62 %>">
+  <%-= Kpbb::Ecr::Component.post_row(ctx, post, thread) -%>
+</div>
+
+<h2>Reply</h2>
+
+<form action="/posts" method="POST" class="f1">
+  <input type="hidden" name="parent_id" value="<%= parent_post.id.to_b62 %>" />
+  <input type="hidden" name="channel_id" value="<%= parent_post.channel_id.to_b62 %>" />
+  <input type="hidden" name="ptype" value="<%= Kpbb::Post::Type::Comment.to_s %>" />
+  <input type="hidden" name="draft" value="0" />
+  <div class="form-group">
+    <label for="body_md">body</label>
+    <textarea class="form-control <%= ctx.errors.form_input_class "body_md" %>" name="body_md" rows=3><%= ctx.old["body_md"] %></textarea>
+    <%= ctx.errors.form_group_p "body_md" -%>
+  </div>
+
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

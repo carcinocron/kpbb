@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+# alias crystal=~/crystal/1.2.1-1/bin/crystal
+
+if [ "$(uname)" == "Darwin" ]; then
+    # OSX has a different version of xargs
+    # brew install findutils
+
+    # brew install moreutils
+    PATH="$(brew --prefix moreutils)/libexec/gnubin:$PATH";
+    # brew install jq
+    PATH="$(brew --prefix jq)/libexec/gnubin:$PATH";
+    # brew install findutils
+    PATH="$(brew --prefix findutils)/libexec/gnubin:$PATH";
+
+    export PATH;
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    # Do something under GNU/Linux platform
+    : # pass
+fi
+
+APP_ENV_FILE=$1
+echo source $APP_ENV_FILE
+source $APP_ENV_FILE
+export $(egrep -v '^#' $APP_ENV_FILE | xargs -d '\n')

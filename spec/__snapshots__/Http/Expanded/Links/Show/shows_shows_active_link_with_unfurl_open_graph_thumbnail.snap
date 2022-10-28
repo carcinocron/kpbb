@@ -1,0 +1,5 @@
+<picture class="img-fluid">
+      <source srcset="/img/lb/g8.png" media="(min-width: 320px)">
+      <source srcset="/img/la/g8.png" media="(min-width: 120px)">
+    <img src="/img/la/g8.png" alt="Link Thumbnail"/>
+  </picture>

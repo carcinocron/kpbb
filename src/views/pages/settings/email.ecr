@@ -1,0 +1,41 @@
+<%= component "user_settings_nav" %>
+
+<% if emails.size == 0 %>
+<div class="text-muted mx-auto mw-512">No emails associated with this account.</div>
+<% else %>
+<table class="table table-sm mx-auto mw-512">
+  <thead>
+    <tr>
+      <th>Email Address</th>
+      <th>verified</th>
+      <th>recovery</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% emails.each do |email| %>
+    <tr>
+      <td><%= email.partial_mask.e %></td>
+      <td><%= one_or_zero(email.verified) %></td>
+      <td><%= one_or_zero(email.recovery) %></td>
+      <%- if at = email.created_at -%>
+        <td><%= component "timeago" %></td>
+      <%- else -%>
+        <td class="text-muted">N/A</td>
+      <%- end -%>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<% end %>
+<form action="/settings/email" method="POST" class="f1">
+  <div class="form-group">
+    <label>Add Email</label>
+    <input class="form-control <%= ctx.errors.form_input_class "add_email" %>" type="text" name="add_email" value="<%= ctx.old["add_email"] %>" />
+    <%= ctx.errors.form_group_p "add_email" %>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Add Email" class="btn btn-primary" />
+  </div>
+</form>

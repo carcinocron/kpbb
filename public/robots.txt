@@ -1,0 +1,37 @@
+
+
+# 80legs
+User-agent: 008
+Disallow: /
+
+# 80legs' new crawler
+User-agent: voltron
+Disallow: /
+
+User-Agent: bender
+Disallow: /my_shiny_metal_ass
+
+User-Agent: Gort
+Disallow: /earth
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: PiplBot
+Disallow: /
+
+User-Agent: *
+crawl-delay: 1
+# only because this would be repetitive content
+Disallow: /comments/*
+Disallow: /comments
+Disallow: /*/create$
+Disallow: /disatulation
+Disallow: /*?*
+Disallow: /links
+Disallow: /domains
+Allow: /
+Allow: /sitemaps/*.xml
+Allow: /users/*
+Allow: /channels/*
+Allow: /posts/*

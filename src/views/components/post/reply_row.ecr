@@ -1,0 +1,55 @@
+<div class="media post">
+  <div class="media-body">
+    <h6>
+      <%- if createdby -%>
+        by
+        <%- if avatar = createdby.avatar.presence -%>
+          <img class="avatar" src="<%= avatar %>" alt="Comment author avatar" width="16" height="16">
+        <%- end -%>
+        <a href="<%= createdby.relative_url %>"><%= createdby.handle %></a>
+      <%- end -%>
+      <%- if at = post.published_at -%>
+        <a href="<%= post.relative_title_url %>">
+          <%-= component "timeago" -%>
+        </a>
+      <%- end -%>
+      <%- if channel -%>
+        in
+        <a href="<%= channel.relative_url %>">
+          <%-= channel.dname -%>
+        </a>
+      <%- end -%>
+      <%= component "post/save_post_button" -%>
+
+      <%- if ctx.user && (post.creator_id == ctx.user.id) -%>
+        <a href="<%= post.relative_url %>/edit">
+          edit
+        </a>
+      <%- end -%>
+
+      <% if post.dreplies > 0 %>
+        <%= post.dreplies %> replies
+        <% if post.treplies > post.dreplies %>
+          (<%= post.treplies %>)
+        <% end %>
+      <% end %>
+    </h6>
+    <div class="item-html"><%= post.body_html %></div>
+  </div>
+</div>
+<% p reply_thread %>
+<%- if sublist = reply_thread.hash[post.id]? -%>
+  <div class="post-tree">
+  <%- sublist.each do |childpost| -%>
+    <%= Kpbb::Ecr::Component.reply_row(
+      ctx: ctx,
+      post: childpost,
+      postusers: postusers,
+      publicusers: publicusers,
+      channel: channel,
+      reply_thread: reply_thread,
+      thread_post: thread_post,
+      parent_post: post) -%>
+  <%- end -%>
+  </div>
+<%- end -%>

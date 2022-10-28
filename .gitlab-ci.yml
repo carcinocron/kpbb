@@ -1,0 +1,199 @@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/crystallang/crystal/
+image: "crystallang/crystal:1.2.1"
+
+# Pick zero or more services to be used on all builds.
+# Only needed when using a docker container to run your tests in.
+# Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
+services:
+#   - redis:latest
+  - postgres:12
+  - docker:20-dind
+
+# https://docs.gitlab.com/ee/ci/variables/predefined_variables.html#variables-reference
+variables:
+  POSTGRES_DB: kpbb
+  POSTGRES_USER: kpbb
+  POSTGRES_PASSWORD: kpbb
+  POSTGRES_HOST_AUTH_METHOD: trust
+  APP_DOMAIN: 127.${PACKAGE_VERSION}
+  APP_KEY: 1234567890123456789012345678test
+  APP_NAME: kpbb
+  KEMAL_ENV: test
+  PG_URL: postgresql://kpbb:kpbb@postgres:5432/kpbb
+  PORT: 5001
+  SPOOF_CFIPCC: us
+  RAVEN_OS_CONTEXT_EXEC: gitlab-ci
+  KPBB_IMG_API: https://kpbb-img-abcdefghij-ue.a.run.app
+  YOUTUBE_API_KEY: dummyyoutubeapikey
+  # FN_MOCK_SERVE: http://localhost:5101
+  FN_MOCK_SERVE: https://kpbb-mock-serve-abcdefghij-ue.a.run.app
+  # FN_INBOUND_FEED: http://localhost:5201
+  FN_INBOUND_FEED: https://us-west1-REDACTED_GOOGLE_CLOUD_PROJECT_ID.cloudfunctions.net/inbound_feed
+  # UNFURL_API:
+  # we'll use a cache dir in our folder
+  # just in case it's shared with other builds
+  CRYSTAL_CACHE_DIR: crystalcache_1_2_1
+  DEBIAN_FRONTEND: noninteractive
+  # Package version can only contain numbers (0-9), and dots (.).
+  # Must be in the format of X.Y.Z, i.e. should match /\A\d+\.\d+\.\d+\z/ regular expresion.
+  # See https://docs.gitlab.com/ee/user/packages/generic_packages/#publish-a-package-file
+  # CI_PIPELINE_IID (not a typo) is CI_PIPELINE_ID but only unique inside project, therefor smaller number
+  PACKAGE_VERSION: "${CI_COMMIT_REF_NAME}-v0.0.${CI_PIPELINE_IID}-${CI_COMMIT_SHORT_SHA}"
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/kpbb/${PACKAGE_VERSION}"
+
+# If you are using built-in Crystal Spec.
+test:
+  interruptible: true
+  before_script:
+    - apt-get update -y -qq
+    - apt-get install -y -qq libxml2-dev moreutils postgresql-client curl wget libssl-dev libxml2-dev libyaml-dev
+    # - apt-get install -y -qq gnuplot # probably won't implement
+    - sh/install_jq
+    - shards
+  script:
+    - mkdir -p bin
+    # - crystal env
+    # we'll clear this cache just in case it's corrupt
+    # - rm -rf $CRYSTAL_CACHE_DIR    # verify connection first, otherwise you'll get a confusing error message
+    - psql -d $PG_URL -c "SELECT 'hello world' as message"
+    - crystal run src/migrate_up.cr
+    - crystal spec --junit_output junit.xml
+    - ls -lh junit.xml
+    - |
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file junit.xml "${PACKAGE_REGISTRY_URL}/junit.xml"
+  cache:
+    paths:
+      - lib
+      - jq-linux64
+  artifacts:
+    paths:
+      - junit.xml
+
+# bin_server:
+#   interruptible: true
+#   before_script:
+#     - apt-get update -y -qq
+#     - apt-get install -y -qq libxml2-dev moreutils postgresql-client curl wget libssl-dev libxml2-dev libyaml-dev
+#     # - apt-get install -y -qq gnuplot # probably won't implement
+#     # - sh/install_jq
+#     - shards
+#   script:
+#     - mkdir -p bin
+#     # - crystal env
+#     # we'll clear this cache just in case it's corrupt
+#     # - rm -rf $CRYSTAL_CACHE_DIR    # verify connection first, otherwise you'll get a confusing error message
+#     - crystal build src/server.cr -o $CI_PROJECT_DIR/bin/server --release
+#     # - cp -r public $CI_PROJECT_DIR/public # cp: cannot copy a directory, 'public', into itself
+#     - ls -lh bin/server
+#     - du -sh public
+#     - |
+#       curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file bin/server "${PACKAGE_REGISTRY_URL}/server"
+#   cache:
+#     paths:
+#       - lib
+#       # - jq-linux64
+#   artifacts:
+#     paths:
+#       - bin/server
+
+static_public:
+  image: node:16-buster
+  interruptible: true
+  before_script:
+    - apt-get update -y -qq
+    - apt-get install -y -qq curl
+    - yarn install
+  script:
+    - NODE_ENV=production node_modules/.bin/tailwindcss --input assets/tailwindcss/app.css --output public/css/app.css
+    - NODE_ENV=production node_modules/.bin/tailwindcss --input assets/tailwindcss/app.css --output public/css/app.min.css --minify
+    - du -sh public
+    - tar -czvf public.tar.gz public
+    - ls -lh public.tar.gz
+    - |
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file ./public.tar.gz "${PACKAGE_REGISTRY_URL}/public.tar.gz"
+  cache:
+    paths:
+      - node_modules
+  artifacts:
+    paths:
+      - public
+
+# bin_cron:
+#   interruptible: true
+#   before_script:
+#     - apt-get update -y -qq
+#     - apt-get install -y -qq libxml2-dev moreutils postgresql-client curl wget libssl-dev libxml2-dev libyaml-dev
+#     # - apt-get install -y -qq gnuplot # probably won't implement
+#     # - sh/install_jq
+#     - shards
+#   script:
+#     - mkdir -p bin
+#     # - crystal env
+#     # we'll clear this cache just in case it's corrupt
+#     # - rm -rf $CRYSTAL_CACHE_DIR    # verify connection first, otherwise you'll get a confusing error message
+#     - crystal build src/cron.cr -o ./bin/cron --release
+#     - crystal build sh/migrate_up -o ./bin/migrate_up --release
+#     - ls -lh bin
+#     - |
+#       curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file bin/cron "${PACKAGE_REGISTRY_URL}/cron"
+#     - |
+#       curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file bin/migrate_up "${PACKAGE_REGISTRY_URL}/migrate_up"
+#   cache:
+#     paths:
+#       - lib
+#       # - jq-linux64
+#   artifacts:
+#     paths:
+#       - bin/cron
+#       - bin/migrate_up
+
+# stages:
+  # - test
+  # - bin_server
+  # - bin_cron
+
+docker_cron:
+  image: docker:20
+  interruptible: true
+  before_script:
+    - apk add curl
+  script:
+    - docker info
+    - docker build . -f src/cron.Dockerfile --tag kpbb-cron:latest
+    - docker save --output kpbb-cron.image.tar kpbb-cron:latest
+    - |
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file kpbb-cron.image.tar "${PACKAGE_REGISTRY_URL}/kpbb-cron.image.tar"
+  artifacts:
+    paths:
+      - kpbb-cron.image.tar
+
+docker_server:
+  image: docker:20
+  interruptible: true
+  before_script:
+    - apk add curl
+  script:
+    - docker info
+    - docker build . -f src/server.Dockerfile --tag kpbb-server:latest
+    - docker save --output kpbb-server.image.tar kpbb-server:latest
+    - |
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file kpbb-server.image.tar "${PACKAGE_REGISTRY_URL}/kpbb-server.image.tar"
+  artifacts:
+    paths:
+      - kpbb-server.image.tar
+
+docker_migrate_up:
+  image: docker:20
+  interruptible: true
+  before_script:
+    - apk add curl
+  script:
+    - docker info
+    - docker build . -f src/migrate_up.Dockerfile --tag kpbb-migrate-up:latest
+    - docker save --output kpbb-migrate-up.image.tar kpbb-migrate-up:latest
+    - |
+      curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file kpbb-migrate-up.image.tar "${PACKAGE_REGISTRY_URL}/kpbb-migrate-up.image.tar"
+  artifacts:
+    paths:
+      - kpbb-migrate-up.image.tar

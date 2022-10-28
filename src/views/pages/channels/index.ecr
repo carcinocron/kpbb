@@ -1,0 +1,28 @@
+<div class="btn-group justify-end">
+  <a href="/channels/create" class="btn btn-primary btn-sm">Create</a>
+  <% if ctx.user.id %>
+    <a href="/channels/?ranked=1" class="btn btn-primary btn-sm">Mine</a>
+    <a href="/channels/?following=1" class="btn btn-primary btn-sm">Following</a>
+    <a href="/channels/?hidden=1" class="btn btn-primary btn-sm">Hidden</a>
+  <% end %>
+</div>
+
+<%= page.render_controls %>
+
+<br>
+
+<% page.collection.each do |channel| %>
+<% channelmembership = channelmemberships.find { |m| m.channel_id == channel.id } %>
+<div class="channel">
+  <% if avatar = channel.avatar %>
+  <img class="avatar" src="<%= avatar %>" alt="Channel avatar">
+  <% end %>
+  <%= component "channelmembership/subscribe_button" %>
+  <a class="dname" href="<%= channel.relative_url %>"><%= channel.dname %></a>
+  <br>
+  <p class="bio"><%= channel.bio %></p>
+  <p class=""></p>
+</div>
+<% end %>
+
+<%= page.render_controls if page.show_bottom_controls %>

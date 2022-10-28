@@ -1,0 +1,4 @@
+<form class="d-inline" action="<%= post.relative_url %>/users/me?return_to=<%= ctx.path_with_query %>" method="POST">
+  <input type="hidden" name="saved" value="<%= one_or_zero(!(postuser && postuser.saved)) %>" />
+  <button type="submit" class="nbtn"><%= ((postuser && postuser.saved) ? "unsave" : "save") %></button>
+</form>

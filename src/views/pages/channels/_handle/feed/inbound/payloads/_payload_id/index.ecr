@@ -1,0 +1,16 @@
+<a href="<%= channel.relative_url %>">channel</a>
+<h2>Payload <%= payload.id.to_b62 %></h2>
+
+<form action="<%= channel.relative_url %>/feed/inbound/payloads/<%= payload.id.to_b62 %>" method="POST" class="f1">
+  <div class="form-group">
+    <label for="data">data</label>
+    <textarea class="form-control %>" name="data" rows=10><%= payload.data %></textarea>
+  </div>
+  <div class="form-group">
+    <label for="result">result</label>
+    <textarea class="form-control %>" name="result" rows=10><%= payload.result %></textarea>
+  </div>
+  <div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+  </div>
+</form>

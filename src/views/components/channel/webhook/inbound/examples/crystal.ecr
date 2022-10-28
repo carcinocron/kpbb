@@ -1,0 +1,29 @@
+<details>
+<summary>Crystal</summary>
+
+<div class="card card-body <% if ctx.theme.dark? %>bg-dark<% else %>bg-light<% end %>">
+<pre class="text-monospace">
+<code>
+require "http"
+
+HEADERS = HTTP::Headers{
+  "Content-Type"   => "application/x-www-form-urlencoded",
+  "Accept"         => "application/json",
+  "X-Webhook-Auth" => "<%= secret %>",
+}
+
+# https://crystal-lang.org/api/<%= Crystal::VERSION %>/HTTP/Client.html
+client = HTTP::Client.new("<%= ctx.base_url.sub("https", ctx.env.request.origin_protocol) %>/webhook/<%= client_id %>", tls: true)
+
+body = HTTP::Params.build do |form|
+  form.add "title", "test"
+  form.add "title", "https://www.youtube.com/watch?v=ub82Xb1C8os"
+end
+
+res = client.post(url:"/posts", headers: HEADERS, body: body)
+
+pp res.status_code
+pp res.body
+
+</code></pre>
+</details>

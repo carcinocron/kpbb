@@ -1,0 +1,22 @@
+<h2><a href="/domains">Domains</a></h2>
+
+<%= page.render_controls -%>
+
+<br>
+
+<ul class="list-unstyled list-domains">
+<% page.collection.each do |domain| -%>
+  <li class="media">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="<%= domain.relative_url %>">
+          <%= domain.id.to_b62 -%>
+        </a>
+      </h5>
+      <%= domain.domain -%>
+    </div>
+  </li>
+<% end -%>
+</ul>
+
+<%= page.render_controls if page.show_bottom_controls -%>

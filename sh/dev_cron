@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export KEMAL_ENV=development
+export PG_URL=postgresql://kpbb:kpbb@localhost:5433/kpbb?sslmode=require
+export PORT=5000
+export APP_DOMAIN=127.0.0.1
+export APP_NAME=kpbb
+export SPOOF_CFIPCC=us
+
+source "$(dirname $0)/env" ".env.local"
+
+# psql -d $PG_URL -c "UPDATE links SET meta = NULL WHERE meta -> 'error' IS NOT NULL;"
+
+crystal run src/cron.cr

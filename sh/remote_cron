@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e # halt on error
+# set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+source "$(dirname $0)/env" ".env.remote"
+
+# psql -d $PG_URL -c "UPDATE links SET meta = NULL WHERE (meta -> 'error') IS NOT NULL;"
+
+CRON_ONCE=1 time crystal run src/cron.cr

@@ -1,0 +1,7 @@
+<%- if link -%>
+  <%-= component "link/thumbnail" -%>
+<%- elsif post.body_md.nil? 0 -%>
+  <img class="icon icon-48" src="/static/fi/<%= ctx.theme.id.to_b62 %>/file-text.svg" alt="No thumbnail">
+<%- else -%>
+  <img class="icon icon-48" src="/static/fi/<%= ctx.theme.id.to_b62 %>/type.svg" alt="No thumbnail">
+<%- end -%>

@@ -1,0 +1,20 @@
+<%= component "user_settings_nav" %>
+
+<form action="/settings/theme" method="POST" class="f1">
+  <div class="form-group">
+    <label for="theme_id">theme</label>
+    <select class="form-control a-select <%= ctx.errors.form_input_class "theme_id" %>" name="theme_id">
+      <option value="">select theme</option>
+      <%- Kpbb::Themes.list.each do |c| -%>
+        <option value="<%= c.id.to_b62 %>" <%= "selected" if c.id.to_b62 == ctx.old["theme_id"] || (ctx.old["theme_id"].presence.nil? && c.id.to_b62 == ctx.env.params.query["theme_id"]?) %>>
+          <%= c.name -%>
+        </option>
+      <%- end -%>
+    </select>
+    <%= ctx.errors.form_group_p "theme_id" -%>
+  </div>
+
+  <div class="form-group">
+    <input type="submit" value="Update Theme" class="btn btn-primary" />
+  </div>
+</form>

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -e # halt on error
+set -x # echo cmds before executing
+set -u # fail on undefined variable
+set -o pipefail # force pipelines to fail on fail
+
+export PATH=/usr/lib/postgresql/12/bin/:$PATH
+
+# export PG_URL=postgresql://kpbb:kpbb@localhost:5433/kpbb_restore_test?sslmode=require
+
+export PG_URL=postgresql://username:password@127.0.0.404:5432/dbname?sslmode=require
+
+PG_PORT=5433
+
+# DUMP_FILE=db/backups/2020_11_07_19_10_56_data.sql
+# DUMP_FILE=db/backups/2020_11_27_19_08_26_data.sql
+DUMP_FILE=db/backups/2020_11_27_19_26_19_data.sql
+
+# sudo -u postgres dropdb -p $PG_PORT --if-exists kpbb_restore_test
+# sudo -u postgres createdb -p $PG_PORT kpbb_restore_test --owner=kpbb
+
+sh/migrate_up
+# psql -v ON_ERROR_STOP=1 -d $PG_URL < db/backups/test_schema.sql
+
+sed 's/createdby_id/creator_id/g;s/Schema: webhooks/Schema: webhook_inbound/g;s/webhooks\.endpoints/webhook_inbound.endpoints/g;s/webhooks\.payloads/webhook_inbound.payloads/g' $DUMP_FILE > /tmp/tmp.sql
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts ADD COLUMN anon BOOLEAN;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts ADD COLUMN cfipcc TEXT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts ADD COLUMN ip_id BIGINT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE postusers ADD COLUMN saved BOOLEAN DEFAULT false;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE postusers ADD COLUMN hidden BOOLEAN DEFAULT false;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE channelmemberships ADD COLUMN hidden BOOLEAN DEFAULT false;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE loginattempts ADD COLUMN cfipcc TEXT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE loginattempts ADD COLUMN ip_id BIGINT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE requestlogs ADD COLUMN cfipcc TEXT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE requestlogs ADD COLUMN ip_id BIGINT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE uploads ADD COLUMN cfipcc TEXT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE uploads ADD COLUMN ip_id BIGINT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE users ADD COLUMN pref JSONB;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE webhook_inbound.payloads ADD COLUMN cfipcc TEXT;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE webhook_inbound.payloads ADD COLUMN ip_id BIGINT;"
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL < /tmp/tmp.sql
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE posts SET ip = (SELECT value FROM ipaddresses WHERE posts.ip_id = ipaddresses.id);"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE loginattempts SET ip = (SELECT value FROM ipaddresses WHERE loginattempts.ip_id = ipaddresses.id);"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE requestlogs SET ip = (SELECT value FROM ipaddresses WHERE requestlogs.ip_id = ipaddresses.id);"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE uploads SET ip = (SELECT value FROM ipaddresses WHERE uploads.ip_id = ipaddresses.id);"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE webhook_inbound.payloads SET ip = (SELECT value FROM ipaddresses WHERE webhook_inbound.payloads.ip_id = ipaddresses.id);"
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE postusers SET saved_at = postusers.updated_at WHERE postusers.saved IS TRUE;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE postusers SET hidden_at = postusers.updated_at WHERE postusers.hidden IS TRUE;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "UPDATE channelmemberships SET hidden_at = channelmemberships.updated_at WHERE channelmemberships.hidden IS TRUE;"
+
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts DROP COLUMN anon;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts DROP COLUMN cfipcc;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE posts DROP COLUMN ip_id;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE postusers DROP COLUMN saved;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE postusers DROP COLUMN hidden;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE channelmemberships DROP COLUMN hidden;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE loginattempts DROP COLUMN cfipcc;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE loginattempts DROP COLUMN ip_id;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE requestlogs DROP COLUMN cfipcc;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE requestlogs DROP COLUMN ip_id;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE uploads DROP COLUMN cfipcc;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE uploads DROP COLUMN ip_id;"
+psql -v ON_ERROR_STOP=1 -d $PG_URL -c "ALTER TABLE users DROP COLUMN pref;"

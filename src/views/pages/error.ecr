@@ -1,0 +1,11 @@
+<%- if message -%>
+  <h2><%= message %></h2>
+<%- else -%>
+  <h2>Internal Server Error</h2>
+<%- end -%>
+
+<%- if code -%>
+  Error Code: <code class="text-monospace"><%= code %></code>
+<%- else -%>
+  No Error Code!
+<%- end -%>

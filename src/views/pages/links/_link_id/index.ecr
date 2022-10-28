@@ -1,0 +1,18 @@
+<div class="media">
+  <div class="media-body">
+    <h5 class="mt-0">
+      <span>
+        <%= link.url -%>
+      </span>
+      <small class="text-muted">
+        <%- if link.active -%>
+          active
+        <%- else -%>
+          inactive
+        <%- end -%>
+      </small>
+    </h5>
+
+    <p>domain_id: <%= link.domain_id %></p>
+  </div>
+</div>

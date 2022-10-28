@@ -1,0 +1,3 @@
+#!/bin/bash
+
+crystal run src/migrate_up.cr

@@ -1,0 +1,332 @@
+/* @todo: is <meta name="color-scheme" content="dark light"> a valid way to swap light mode, dark mode via cookie/js? */
+/* it appears the answer is no */
+:root {
+  color-scheme: dark light;
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.post, .channel {
+  @apply bg-gray-900
+}
+.post {
+  @apply flex mx-1
+}
+.post .tn {
+  width: 60px;
+  height: 45px;
+  text-align: center;
+  @apply mx-1 flex;
+}
+.post .tn img {
+  max-width: 60px;
+  /* height: auto; */
+  @apply object-none
+}
+.post .tn {
+  margin-right: 8px;
+}
+
+.mx-auto, .ml-auto {
+  margin-left: auto !important;
+}
+
+.mx-auto, .mr-auto {
+  margin-right: auto !important;
+}
+
+.post .tn img.icon.icon-48 {
+  height: 32px;
+  width: 32px;
+  margin-top: 6.5px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  @apply object-contain
+}
+
+.post + .post, .reply-tree + .reply-tree, .post + .reply-tree, .reply-tree + .post, .parent-tree {
+  @apply my-1;
+}
+
+@media (min-width: 320px) {
+  .post .tn {
+    width: 120px;
+    height: 90px;
+  }
+  .post .tn img {
+    max-width: 100%;
+    height: auto;
+  }
+  .post .tn {
+    /* @apply mx-2; */
+  }
+
+  .post .tn img.icon.icon-48 {
+    height: 48px;
+    width: 48px;
+    margin-top: 21px;
+  }
+
+  .parent-tree .post {
+    padding-left: 6px;
+    margin-left: 30px;
+    border-left: 6px solid;
+    @apply border-gray-800
+  }
+  .parent-tree .post.p1 {
+    margin-left: 60px;
+  }
+  .parent-tree .post.p2 {
+    margin-left: 90px;
+  }
+  .parent-tree .post.p3 {
+    margin-left: 120px;
+  }
+  .parent-tree .post.p4 {
+    margin-left: 150px;
+  }
+  .parent-tree .post.p5 {
+    margin-left: 180px;
+  }
+  .parent-tree .post.p6 {
+    margin-left: 210px;
+  }
+  .parent-tree .post.p7 {
+    margin-left: 240px;
+  }
+  .parent-tree .post.p8 {
+    margin-left: 270px;
+  }
+
+  .reply-tree .reply-tree {
+    margin-left: 15px;
+    border-left: 6px solid;
+    @apply border-gray-900
+  }
+}
+body {
+  /* @apply px-1; */
+  background: black;
+  color: #ddd;
+}
+footer {
+  background: #222;
+}
+@media (prefers-color-scheme: dark) {
+  /* basically, all inputs: */
+  [type='text'], [type='email'], [type='url'], [type='password'], [type='number'], [type='date'], [type='datetime-local'], [type='month'], [type='search'], [type='tel'], [type='time'], [type='week'], [multiple], textarea, select {
+    background:#222;
+    color: #eee;
+  }
+  /* how to make hover away with autofill not bg=white?*/
+  /* Change Autocomplete styles in Chrome*/
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus
+  input:-webkit-autofill, 
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    border: 1px solid #0a0;
+    -webkit-text-fill-color: #0a0;
+    -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+    transition: background-color 5000s ease-in-out 0s;
+    background-color: #222 !important;
+  }
+}
+@media (prefers-color-scheme: light) {
+  body {
+    background: #eee;
+    color: black;
+  }
+  footer {
+    background: #aaa;
+  }
+  .post, .channel {
+    @apply bg-gray-100
+  }
+}
+nav {
+  @apply flex-1;
+}
+nav > a {
+  @apply inline-flex pr-3;
+}
+nav > a.active {
+  @apply font-semibold border border-gray-400;
+}
+
+/* // if the page to too short to scroll */
+/* // we still want the footer at the bottom */
+body {
+  @apply flex flex-col h-screen
+}
+body > main {
+  @apply flex-grow
+}
+
+@layer base {
+  .mw-512 {
+    max-width: 512px;
+  }
+}
+
+/* form.f1: standard 512px form*/
+form.f1 {
+  @apply mx-auto mw-512 p-4 shadow-md rounded-md text-left
+}
+form.f1 h1 {
+  @apply text-xl text-center
+}
+
+form.f1 > .form-group {
+  @apply py-2
+}
+
+form.f1 input {
+  @apply mt-1 block rounded-md
+}
+
+form.f1 input[type='text'],
+form.f1 input[type='email'],
+form.f1 input[type='url'],
+form.f1 input[type='password'],
+form.f1 input[type='number'],
+form.f1 input[type='date'],
+form.f1 input[type='datetime-local'],
+form.f1 input[type='month'],
+form.f1 input[type='search'],
+form.f1 input[type='tel'],
+form.f1 input[type='time'],
+form.f1 input[type='week'],
+form.f1 [multiple], form.f1 textarea, form.f1 select {
+  @apply w-full
+}
+form.f1 input[type='radio'], form.f1 input[type='checkbox'] {
+  @apply m-1 mx-2
+}
+
+input.is-invalid {
+  @apply border-red-600
+}
+.invalid-feedback {
+  @apply text-red-600
+}
+input[disabled], .disabled {
+  @apply opacity-50 
+}
+
+/* form.f2: a small inline form that invisibly wraps a button */
+form.f2 {
+  @apply inline
+}
+
+@layer base {
+  .btn {
+    @apply font-bold px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 active:bg-purple-600
+  }
+  .btn.btn-primary {
+    @apply bg-blue-500 text-white 
+  }
+  .btn.btn-danger {
+    @apply bg-red-500 text-white
+  }
+  /*seconday-outline*/
+  .btn.btn-s-o {
+    @apply text-gray-50 bg-gray-600 border border-gray-900 border-solid rounded-lg px-4 py-2 mx-0 outline-none focus:ring active:bg-purple-600 
+  }
+  .btn-group {
+    @apply flex
+  }
+  .btn-md {
+    @apply px-3 py-2
+  }
+  .btn-sm {
+    @apply px-1 py-1
+  }
+  .fg-border {
+    @apply border rounded border-gray-500 border-opacity-50
+  }
+  .text-muted {
+    @apply opacity-75
+  }
+  .form-hint {
+    @apply text-sm opacity-75
+  }
+  .fr {
+    float: right;
+  }
+  .fl {
+    float: left;
+  }
+}
+
+nav.page-contr {
+  @apply flex
+}
+
+
+.d-inline {
+  @apply inline
+}
+.post > .flex-1 > h1 {
+  @apply text-base
+}
+.post > .flex-1 > span {
+  @apply text-sm text-gray-400
+}
+.post a {
+  @apply underline
+}
+@media (prefers-color-scheme: light) {
+  .post > .flex-1 > span {
+    @apply text-black
+  }
+}
+.post.thread-ctx {
+  @apply border rounded border-gray-500 border-opacity-50
+}
+
+textarea {
+  @apply w-full px-3 py-2 border rounded-lg focus:outline-none
+}
+
+.channel {
+  min-height: 98px;
+  @apply m-1 clear-both
+}
+.channel .avatar {
+  width: 90px;
+  height: 90px;
+  @apply fl inline align-top m-1
+}
+.channel .dname {
+  @apply inline align-top 
+}
+.channel .bio {
+  @apply inline align-top text-sm text-muted clear-both
+}
+/* the subscribe button*/
+.channel .subscribe {
+  @apply m-1
+}
+
+table {
+  border-collapse: collapse;
+}
+.table th, .table td {
+  vertical-align: top;
+  border-top: 1px solid rgba(0,0,0,.6);
+  padding: .3rem;
+}
+pre {
+  overflow: auto;
+}
+
+.link-abbr {
+  @apply text-sm text-muted
+}

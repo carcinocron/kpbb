@@ -1,0 +1,35 @@
+#!/usr/bin/env crystal
+
+require "pg"
+require "option_parser"
+require "./cli_shared"
+
+step = nil
+dry_run = false
+verbose = false
+parser = ::OptionParser.new do |parser|
+  parser.banner = "Usage: sh/migrate_up --env=.env --step=1"
+  read_env
+  parser.on("-v", "--verbose", "Enable verbose output") { verbose = true }
+  # parser.on("", "--dry-run", "Dry Run") { dry_run = true }
+  parser.on("", "--step=STEP", "Enable verbose output") { |new_value| step = new_value.to_i }
+  parser.on("-h", "--help", "Show this help") do
+    puts parser
+    exit(0)
+  end
+  parser.missing_option do |missing_option|
+    next if missing_option == "--env"
+    pp ({:missing_option => missing_option})
+    exit(1)
+  end
+  parser.invalid_option do |invalid_option|
+    pp ({:invalid_option => invalid_option})
+    exit(1)
+  end
+end
+
+parser.parse
+
+pp ({:line => __LINE__, :dry_run => dry_run, :step => step})
+
+`psql -v ON_ERROR_STOP=1 -d #{ENV["PG_URL"]} < db/sql/drop_all_tables.sql`

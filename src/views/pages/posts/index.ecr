@@ -1,0 +1,27 @@
+<div class="btn-group justify-end">
+  <a href="/posts/create" class="btn btn-primary btn-sm">Submit</a>
+  <a href="/posts/create?ptype=question" class="btn btn-primary btn-sm">Ask Question</a>
+  <a href="/posts/?ptype=question" class="btn btn-primary btn-sm">Questions</a>
+  <%- if ctx.user.id -%>
+  <a href="/posts/?draft=1" class="btn btn-primary btn-sm">Drafts</a>
+  <a href="/posts/?saved=1" class="btn btn-primary btn-sm">Saved</a>
+  <a href="/posts/?hidden=1" class="btn btn-primary btn-sm">Hidden</a>
+  <%- end -%>
+</div>
+
+<%= page.render_controls -%>
+
+<% page.collection.each do |post| -%>
+  <%
+    createdby = publicusers.find { |u| u.id == post.creator_id }
+    link = links.find { |l| l.id == post.link_id }
+    channel = channels.find { |c| c.id == post.channel_id }
+    postuser = postusers.find { |pu| pu.post_id == post.id }
+    channelmembership = nil
+  -%>
+  <div class="post" role="post region" data-post-id="<%= post.id.to_base62 %>">
+    <%-= Kpbb::Ecr::Component.post_row(ctx, post, thread: Kpbb::Post::Thread.new(page: page)) -%>
+  </div>
+<% end -%>
+
+<%= page.render_controls if page.show_bottom_controls -%>
