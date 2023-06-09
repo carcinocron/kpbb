@@ -4,7 +4,7 @@ Originally stood for "Kemal Parrot Bulletin Board", but was not intended to rele
 
 It was intented to be a general self-hosted Twitter/Reddit/Tumblr alternative with a focus on minimal use of javascript. Think if hackernews decided to have more features without becoming a giant SPA or abandoning it's minimalism.
 
-Autoposting into KPBB from external RSS feeds and webhooks work well, logging in and posting/commenting works well, everything else will probably need polishing or implementing. Funny enough, outbound RSS feeds were never implemented.
+Autoposting into KPBB from external RSS feeds and inbound webhooks work well, logging in and posting/commenting works well, everything else will probably need polishing or implementing. Funny enough, outbound RSS feeds were never implemented.
 
 Some of the SQL/ORM stuff was written before I fully understood the `DB` and `PG` modules, and some ORMs either didn't work or were too magical to use. Sentry (aka raven) logs DB queries for exceptions.
 
