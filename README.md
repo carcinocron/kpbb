@@ -2,7 +2,7 @@
 
 Originally stood for "Kemal Parrot Bulletin Board", but was not intended to release under that name. I'd be happy to help anyone interested in taking over this project
 
-It was intented to be a general self-hosted Twitter/Reddit/Tumblr alternative with a focus on minimal use of javascript. Think if hackernews decided to have more features without becoming a giant SPA or abandoning it's minimalism.
+It was intended to be a general self-hosted Twitter/Reddit/Tumblr alternative with a focus on minimal use of javascript. Think if hackernews decided to have more features without becoming a giant SPA or abandoning it's minimalism. The only federation this project intended to use was going to be RSS feeds (inbound and outbound). I was interested in an optional "log in with your mastadon" account feature, also a "follow this channel/board as if it were a mastadon user" feature.
 
 Autoposting into KPBB from external RSS feeds and inbound webhooks work well, logging in and posting/commenting works well, everything else will probably need polishing or implementing. Funny enough, outbound RSS feeds were never implemented.
 
