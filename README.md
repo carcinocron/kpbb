@@ -4,7 +4,7 @@ Originally stood for "Kemal Parrot Bulletin Board", but was not intended to rele
 
 It was intented to be a general self-hosted Twitter/Reddit/Tumblr alternative with a focus on minimal use of javascript. Think if hackernews decided to have more features without becoming a giant SPA or abandoning it's minimalism.
 
-Autoposting into KPBB from external RSS feeds and webhooks work well, everything else will probably need polishing or implementing. Funny enough, outbound RSS feeds were never implemented.
+Autoposting into KPBB from external RSS feeds and webhooks work well, logging in and posting/commenting works well, everything else will probably need polishing or implementing. Funny enough, outbound RSS feeds were never implemented.
 
 Some of the SQL/ORM stuff was written before I fully understood the `DB` and `PG` modules, and some ORMs either didn't work or were too magical to use. Sentry (aka raven) logs DB queries for exceptions.
 
@@ -33,7 +33,7 @@ sh/test
 sh/watch_test
 ```
 
-There is a `gitlab-ci.yml`, so if you upload this to gitlab I don't know if it will run the tests automatically.
+There is a `gitlab-ci.yml`, so if you upload this to gitlab I don't know if it will run the tests automatically. The codebase was written using TDD (test driven design) so the coverage will be very high.
 
 ## Compiling
 
@@ -47,4 +47,4 @@ If you do not want to put this behind cloudflare, you would need to spoof the `c
 
 `cloudbuild.yaml` for Google Cloud probably does not work correctly/completely.
 
-Note that server, cron, and migrate_up are seperate binaries.
+Note that server, cron, and migrate_up are seperate binaries. I'd probably merge them into one binary and have them run as commands like `kpbb migrate`, `kpbb serve`, `kpbb cron` if I were going to continue working on this.
