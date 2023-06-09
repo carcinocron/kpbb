@@ -1,6 +1,6 @@
 # KPBB - (abandoned)
 
-Originally stood for "Kemal Parrot Bulletin Board", but was not intended to release under that name.
+Originally stood for "Kemal Parrot Bulletin Board", but was not intended to release under that name. I'd be happy to help anyone interested in taking over this project
 
 It was intented to be a general self-hosted Twitter/Reddit/Tumblr alternative with a focus on minimal use of javascript. Think if hackernews decided to have more features without becoming a giant SPA or abandoning it's minimalism.
 
@@ -9,6 +9,10 @@ Autoposting into KPBB from external RSS feeds and webhooks work well, logging in
 Some of the SQL/ORM stuff was written before I fully understood the `DB` and `PG` modules, and some ORMs either didn't work or were too magical to use. Sentry (aka raven) logs DB queries for exceptions.
 
 Majority of the code was written in 0.35, but some updates were made for 1.2.1
+
+## Screenshot
+
+![received_576739623582131_cropped](https://github.com/carcinocron/kpbb/assets/4094542/d5ae2440-0c17-48d9-a996-4c90da37ef55)
 
 ## Documentation
 
